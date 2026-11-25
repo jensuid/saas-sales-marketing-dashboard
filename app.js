@@ -54,7 +54,7 @@
   const stageShort = (s) => STAGE_SHORT[s] || String(s || "").replace(/_/g, " ");
 
   /* ----------------------------- state ----------------------------------- */
-  const state = { page: "p1", year: "all", focus: "", drill: 1 };
+  const state = { page: "p1", year: "all", focus: "", drill: 1, funnelMode: "all", funnelPeriod: "" };
   const focus = () => {
     if (!state.focus) return null;
     const i = state.focus.indexOf(":");
@@ -405,8 +405,13 @@
 
   /** Funnel horizontal: reach + step + cumulative (label angka selalu di luar bar). */
   function funnel(mount, o) {
-    /* jaga urutan walau metrik mengembalikan baris tak berurut */
-    const rs = o.rows.slice().sort((a, b) => b.reach - a.reach);
+    /* jaga urutan walau metrik mengembalikan baris tak berurut; mode periode
+       (funnel_by_period, backlog #1 di 09) memakai urutan stage_order agar
+       funnel tidak salah urut saat bar tak-monoton akibat lead menyeberang
+       batas window */
+    const rs = o.rows.slice().sort(o.orderBy
+      ? (a, b) => a[o.orderBy] - b[o.orderBy]
+      : (a, b) => b.reach - a.reach);
     const rowH = o.rowH || 34;
     const top = 16;
     chart(mount, rs.length * rowH + top + 6, (svg, w, h) => {
@@ -772,6 +777,51 @@
     });
     const cohorts = Array.from(new Set(smc.map((r) => r.cohort_month))).filter((m) => state.year === "all" || m.startsWith(state.year)).sort();
 
+    // Momentum event-month (docs/09 Q1): pivot bulan × stage dari
+    // step_conversion_trend — reshape baris export, bukan hitung ulang agregat.
+    // Tiga step dipilih dari drop-off all-time terbesar (seleksi baris).
+    const sct = rows("step_conversion_trend");
+    const topDrop = rows("dropoff_leads").slice().sort((x, y) => y.dropoff - x.dropoff).slice(0, 3).map((r) => r.stage_name);
+    const trendMap = {};
+    sct.forEach((r) => {
+      if (state.year !== "all" && !(r.month || "").startsWith(state.year)) return;
+      const row = trendMap[r.month] || (trendMap[r.month] = { month: r.month });
+      row[r.stage] = r.step_conv;
+    });
+    const trendRows = Object.values(trendMap).sort((x, y) => (x.month < y.month ? -1 : 1));
+    const trendSeries = topDrop.map((s, i) => ({
+      key: s,
+      label: stageShort(s) + " → " + stageShort(stages[stages.indexOf(s) + 1]),
+      color: SERIES_COLORS[i % 5],
+    }));
+
+    // Funnel utama dipotong periode (backlog #1 di 09): all-time / per tahun /
+    // per kuartal dari metrik funnel_by_period (reach kondisional). Pemilihan
+    // mode & window = seleksi baris dataset ekspor, bukan hitung ulang.
+    const fMode = state.funnelMode || "all";
+    let funnelRows = conv;
+    let funnelChips = ["cohort", "all-time"];
+    let funnelCtl = "";
+    let funnelNote = "reached(S) = distinct leads yang pernah mencapai S. Funnel all-time — pembanding utama; potongan periode ada di kontrol kartu ini.";
+    if (fMode !== "all") {
+      const all = fMode === "year" ? rows("funnel_yearly") : rows("funnel_quarterly");
+      const periods = Array.from(new Set(all.map((r) => r.period))).sort();
+      if (!state.funnelPeriod || !periods.includes(state.funnelPeriod)) state.funnelPeriod = periods[periods.length - 1];
+      funnelRows = all.filter((r) => r.period === state.funnelPeriod);
+      funnelChips = ["period", "event-window"];
+      const plabel = (p) => (fMode === "year" ? p.slice(0, 4) : qlabel(p));
+      funnelCtl = '<div class="pager" style="margin:0 0 var(--s3)">' +
+        ["all", "year", "quarter"].map((mo) =>
+          '<button class="btn" data-funnel="' + mo + '"' + (fMode === mo ? " disabled" : "") + ">" +
+          (mo === "all" ? "All-time" : mo === "year" ? "Per tahun" : "Per kuartal") + "</button>").join("") +
+        '<select data-funnel-period>' +
+        periods.map((p) => '<option value="' + p + '"' + (p === state.funnelPeriod ? " selected" : "") + ">" + plabel(p) + "</option>").join("") +
+        "</select></div>";
+      const nTop = funnelRows.length ? funnelRows[0].reach : 0;
+      funnelNote = "Atribusi window EVENT — reach kondisional (`09`): bar(S) = lead yang mencapai S dalam window dan pernah mencapai S−1 kapan pun; event S−1 tidak harus dalam window yang sama. Step/cum bisa &gt;100% saat lead menyeberang batas window; kualitas kohort tetap dibaca di heatmap." +
+        (nTop < 30 ? " Window kecil (n " + num(nTop) + " &lt; 30 lead) — baca bersama all-time." : "");
+    }
+
     const html =
       '<div class="phead"><p class="eyebrow">Halaman 2 · Funnel &amp; conversion</p>' +
       '<h1>Di mana pipeline bocor, dan kenapa?</h1>' +
@@ -785,16 +835,22 @@
       "</div>" +
       '<div class="grid g3">' +
       cardHTML({
-        id: "p2-funnel", title: "Berapa yang sampai tiap stage, dan berapa yang hilang per langkah?", refs: "metrics: step_conversion · stage_reach", chips: ["cohort", "all-time"],
+        id: "p2-funnel", title: "Berapa yang sampai tiap stage, dan berapa yang hilang per langkah?", refs: "metrics: step_conversion · stage_reach · funnel_by_period", chips: funnelChips,
         sub: "Urutan memakai stage_id, bukan nama. Angka di dalam batang = leads; kanan = step % dan cumulative %.",
-        body: mountDiv("p2-funnel", 280),
-        note: "reached(S) = distinct leads yang pernah mencapai S. Funnel all-time; filter periode tidak dipecah per stage.",
+        body: funnelCtl + mountDiv("p2-funnel", 280),
+        note: funnelNote,
       }) +
       cardHTML({
         id: "p2-stale", title: "Berapa pipeline yang menggantung, dan sejak kapan?", refs: "metric: stale_open_pipeline_series", chips: ["snapshot", "quarterly"],
         sub: "Lead tidak-won yang idle lebih dari 30 dan 90 hari penuh, dihitung di akhir tiap kuartal.",
         body: mountDiv("p2-stale", 240),
         note: "Snapshot retrospektif: nilai kuartal lama memakai pengetahuan penuh. Deret berhenti di Q4 2022 karena aktivitas berhenti.",
+      }) +
+      cardHTML({
+        id: "p2-trend", title: "Kapan funnel melemah — di bulan dan step mana?", refs: "metric: step_conversion_trend", chips: ["period", "event-month"],
+        sub: "Konversi antar-step per bulan EVENT (bukan kohort): yang maju bulan ini ÷ yang ada di stage sebelumnya bulan ini. Tiga step dengan drop-off all-time terbesar.",
+        body: mountDiv("p2-trend", 240),
+        note: "Atribusi bulan event — mencampur kohort dan tanpa censoring; pembandingnya heatmap kohort di bawah. Nilai bisa &gt;100% saat lead bulan sebelumnya maju di bulan ini. Pemilihan 3 step = seleksi baris drop-off, bukan hitung ulang.",
       }) +
       "</div>" +
       '<div class="grid g2">' +
@@ -848,13 +904,15 @@
         body: mountDiv("p2-leads", 150),
       }) +
       "</div>" +
-      '<div class="scope-row">' + scopeChip("filter periode: leads, win rate, heatmap, stale", true) + scopeChip("funnel & time-to-deal: all-time", false) + scopeChip("fokus source: menyorot baris tabel", true) + "</div>" +
+      '<div class="scope-row">' + scopeChip("filter periode: leads, win rate, heatmap, stale, trend", true) + scopeChip("time-to-deal: all-time · funnel utama: kontrol periode kartu", false) + scopeChip("fokus source: menyorot baris tabel", true) + "</div>" +
       '<footer class="pagefoot"><span>Sumber: metrics/ F4 · funnel &amp; pipeline</span><span>F5 · implementasi</span></footer>';
 
     return {
       html: html,
       draws: {
-        "p2-funnel": (m) => funnel(m, { rows: conv, label: (r) => r.stage_name }),
+        "p2-funnel": (m) => funnel(m, fMode === "all"
+          ? { rows: conv, label: (r) => r.stage_name }
+          : { rows: funnelRows, label: (r) => r.stage_name, orderBy: "stage_order" }),
         "p2-stale": (m) => lineChart(m, {
           rows: stale,
           series: [
@@ -862,6 +920,10 @@
             { key: "idle_gt_90d", label: "idle >90 hari", color: "var(--chart-1)" },
           ],
           yFmt: (v) => num(v), xLabel: (r) => qlabel(r.period_end), height: 210,
+        }),
+        "p2-trend": (m) => lineChart(m, {
+          rows: trendRows, series: trendSeries,
+          yFmt: (v) => pct(v, 0), xLabel: (r) => mlabel(r.month), height: 210,
         }),
         "p2-ttd": (m) => boxplot(m, { p25: ttd.p25, median: ttd.median_days, p75: ttd.p75, max: ttd.max_days, note: "n " + num(ttd.n_won) + " deal" }),
         "p2-heat": (m) => heat(m, {
@@ -1599,11 +1661,26 @@
   /* drill-through kontrak (Q4 di 07): paginasi tampilan — seleksi baris dari
      dataset ekspor, bukan hitung ulang agregat. */
   view.addEventListener("click", (e) => {
+    /* funnel utama dipotong periode (backlog #1 di 09): mode & window =
+       seleksi baris dataset funnel_by_period, bukan hitung ulang agregat */
+    const fb = e.target.closest("[data-funnel]");
+    if (fb) {
+      state.funnelMode = fb.dataset.funnel;
+      state.funnelPeriod = "";
+      render(false);
+      return;
+    }
     const b = e.target.closest("[data-drill]");
     if (!b) return;
     e.preventDefault();
     if (b.dataset.drill === "prev" && state.drill > 1) state.drill -= 1;
     if (b.dataset.drill === "next") state.drill += 1;
+    render(false);
+  });
+  view.addEventListener("change", (e) => {
+    const fs = e.target.closest("[data-funnel-period]");
+    if (!fs) return;
+    state.funnelPeriod = fs.value;
     render(false);
   });
 

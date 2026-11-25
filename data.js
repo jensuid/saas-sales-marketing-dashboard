@@ -129,6 +129,15 @@ window.METRICS_DATA = {
       "name": "form_funnel"
     },
     {
+      "atribusi": "periode event (event_ts)",
+      "catatan": "backlog #1 `09`: funnel utama dipotong window event. Reach KONDISIONAL — bar(S) pada window W = distinct leads dengan event stage S dalam W DAN pernah mencapai S−1 kapan pun, bukan reach naive yang menuntut S−1 juga dalam window. Step/cum antar-window bisa >100% saat lead menyeberang batas periode (konvensi sama dengan step_conversion_trend); pembacaan kualitas kohort tetap di stage_month_conversion",
+      "dipakai_dashboard": true,
+      "grain": "stage × window (quarter|year)",
+      "jenis": "period",
+      "katalog": "Funnel & Pipeline / `09`",
+      "name": "funnel_by_period"
+    },
+    {
       "atribusi": "contract_date × dim lead",
       "catatan": "kanvas channel; typo 'Refferal' diperbaiki di layer presentasi",
       "dipakai_dashboard": true,
@@ -370,6 +379,15 @@ window.METRICS_DATA = {
       "jenis": "cohort",
       "katalog": "Funnel & Pipeline",
       "name": "step_conversion"
+    },
+    {
+      "atribusi": "bulan event (event_ts)",
+      "catatan": "sudut pandang momentum `09` Q1: event stage S bulan M ÷ event stage S−1 bulan M (distinct leads) — tanpa censoring, tapi mencampur kohort; pembandingnya cohort view = stage_month_conversion. Bisa >100% saat lead yang mencapai S−1 di bulan sebelumnya maju di bulan ini",
+      "dipakai_dashboard": true,
+      "grain": "stage × bulan (event)",
+      "jenis": "period",
+      "katalog": "Funnel & Pipeline / `09`",
+      "name": "step_conversion_trend"
     },
     {
       "atribusi": "akhir bulan M (retrospektif)",
@@ -51969,6 +51987,886 @@ window.METRICS_DATA = {
         }
       ]
     },
+    "funnel_quarterly": {
+      "call": {
+        "grain": "quarter"
+      },
+      "metric": "funnel_by_period",
+      "rows": [
+        {
+          "cum_conv": 1.0,
+          "period": "2020-10-01",
+          "prev_reach": null,
+          "reach": 121,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 0.6859504132231405,
+          "period": "2020-10-01",
+          "prev_reach": 121,
+          "reach": 83,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 0.6859504132231405
+        },
+        {
+          "cum_conv": 0.5950413223140496,
+          "period": "2020-10-01",
+          "prev_reach": 83,
+          "reach": 72,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 0.8674698795180723
+        },
+        {
+          "cum_conv": 0.4793388429752066,
+          "period": "2020-10-01",
+          "prev_reach": 72,
+          "reach": 58,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.8055555555555556
+        },
+        {
+          "cum_conv": 0.35537190082644626,
+          "period": "2020-10-01",
+          "prev_reach": 58,
+          "reach": 43,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.7413793103448276
+        },
+        {
+          "cum_conv": 0.256198347107438,
+          "period": "2020-10-01",
+          "prev_reach": 43,
+          "reach": 31,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.7209302325581395
+        },
+        {
+          "cum_conv": 0.18181818181818182,
+          "period": "2020-10-01",
+          "prev_reach": 31,
+          "reach": 22,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.7096774193548387
+        },
+        {
+          "cum_conv": 0.0,
+          "period": "2020-10-01",
+          "prev_reach": 22,
+          "reach": 0,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 0.0
+        },
+        {
+          "cum_conv": 1.0,
+          "period": "2021-01-01",
+          "prev_reach": null,
+          "reach": 309,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 0.8576051779935275,
+          "period": "2021-01-01",
+          "prev_reach": 309,
+          "reach": 265,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 0.8576051779935275
+        },
+        {
+          "cum_conv": 0.7475728155339806,
+          "period": "2021-01-01",
+          "prev_reach": 265,
+          "reach": 231,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 0.8716981132075472
+        },
+        {
+          "cum_conv": 0.6213592233009708,
+          "period": "2021-01-01",
+          "prev_reach": 231,
+          "reach": 192,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.8311688311688312
+        },
+        {
+          "cum_conv": 0.511326860841424,
+          "period": "2021-01-01",
+          "prev_reach": 192,
+          "reach": 158,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.8229166666666666
+        },
+        {
+          "cum_conv": 0.3818770226537217,
+          "period": "2021-01-01",
+          "prev_reach": 158,
+          "reach": 118,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.7468354430379747
+        },
+        {
+          "cum_conv": 0.284789644012945,
+          "period": "2021-01-01",
+          "prev_reach": 118,
+          "reach": 88,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.7457627118644068
+        },
+        {
+          "cum_conv": 0.255663430420712,
+          "period": "2021-01-01",
+          "prev_reach": 88,
+          "reach": 79,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 0.8977272727272727
+        },
+        {
+          "cum_conv": 1.0,
+          "period": "2021-04-01",
+          "prev_reach": null,
+          "reach": 336,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 0.8333333333333334,
+          "period": "2021-04-01",
+          "prev_reach": 336,
+          "reach": 280,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 0.8333333333333334
+        },
+        {
+          "cum_conv": 0.7291666666666666,
+          "period": "2021-04-01",
+          "prev_reach": 280,
+          "reach": 245,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 0.875
+        },
+        {
+          "cum_conv": 0.6011904761904762,
+          "period": "2021-04-01",
+          "prev_reach": 245,
+          "reach": 202,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.8244897959183674
+        },
+        {
+          "cum_conv": 0.49404761904761907,
+          "period": "2021-04-01",
+          "prev_reach": 202,
+          "reach": 166,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.8217821782178217
+        },
+        {
+          "cum_conv": 0.36607142857142855,
+          "period": "2021-04-01",
+          "prev_reach": 166,
+          "reach": 123,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.7409638554216867
+        },
+        {
+          "cum_conv": 0.30952380952380953,
+          "period": "2021-04-01",
+          "prev_reach": 123,
+          "reach": 104,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.8455284552845529
+        },
+        {
+          "cum_conv": 0.25595238095238093,
+          "period": "2021-04-01",
+          "prev_reach": 104,
+          "reach": 86,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 0.8269230769230769
+        },
+        {
+          "cum_conv": 1.0,
+          "period": "2021-07-01",
+          "prev_reach": null,
+          "reach": 356,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 0.8061797752808989,
+          "period": "2021-07-01",
+          "prev_reach": 356,
+          "reach": 287,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 0.8061797752808989
+        },
+        {
+          "cum_conv": 0.7528089887640449,
+          "period": "2021-07-01",
+          "prev_reach": 287,
+          "reach": 268,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 0.9337979094076655
+        },
+        {
+          "cum_conv": 0.6573033707865169,
+          "period": "2021-07-01",
+          "prev_reach": 268,
+          "reach": 234,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.8731343283582089
+        },
+        {
+          "cum_conv": 0.5308988764044944,
+          "period": "2021-07-01",
+          "prev_reach": 234,
+          "reach": 189,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.8076923076923077
+        },
+        {
+          "cum_conv": 0.40168539325842695,
+          "period": "2021-07-01",
+          "prev_reach": 189,
+          "reach": 143,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.7566137566137566
+        },
+        {
+          "cum_conv": 0.3146067415730337,
+          "period": "2021-07-01",
+          "prev_reach": 143,
+          "reach": 112,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.7832167832167832
+        },
+        {
+          "cum_conv": 0.25,
+          "period": "2021-07-01",
+          "prev_reach": 112,
+          "reach": 89,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 0.7946428571428571
+        },
+        {
+          "cum_conv": 1.0,
+          "period": "2021-10-01",
+          "prev_reach": null,
+          "reach": 422,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 0.8317535545023697,
+          "period": "2021-10-01",
+          "prev_reach": 422,
+          "reach": 351,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 0.8317535545023697
+        },
+        {
+          "cum_conv": 0.7345971563981043,
+          "period": "2021-10-01",
+          "prev_reach": 351,
+          "reach": 310,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 0.8831908831908832
+        },
+        {
+          "cum_conv": 0.6137440758293838,
+          "period": "2021-10-01",
+          "prev_reach": 310,
+          "reach": 259,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.8354838709677419
+        },
+        {
+          "cum_conv": 0.47393364928909953,
+          "period": "2021-10-01",
+          "prev_reach": 259,
+          "reach": 200,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.7722007722007722
+        },
+        {
+          "cum_conv": 0.35545023696682465,
+          "period": "2021-10-01",
+          "prev_reach": 200,
+          "reach": 150,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.75
+        },
+        {
+          "cum_conv": 0.2962085308056872,
+          "period": "2021-10-01",
+          "prev_reach": 150,
+          "reach": 125,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.8333333333333334
+        },
+        {
+          "cum_conv": 0.22037914691943128,
+          "period": "2021-10-01",
+          "prev_reach": 125,
+          "reach": 93,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 0.744
+        },
+        {
+          "cum_conv": 1.0,
+          "period": "2022-01-01",
+          "prev_reach": null,
+          "reach": 439,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 0.8656036446469249,
+          "period": "2022-01-01",
+          "prev_reach": 439,
+          "reach": 380,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 0.8656036446469249
+        },
+        {
+          "cum_conv": 0.785876993166287,
+          "period": "2022-01-01",
+          "prev_reach": 380,
+          "reach": 345,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 0.9078947368421053
+        },
+        {
+          "cum_conv": 0.6765375854214123,
+          "period": "2022-01-01",
+          "prev_reach": 345,
+          "reach": 297,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.8608695652173913
+        },
+        {
+          "cum_conv": 0.5261958997722096,
+          "period": "2022-01-01",
+          "prev_reach": 297,
+          "reach": 231,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.7777777777777778
+        },
+        {
+          "cum_conv": 0.4145785876993166,
+          "period": "2022-01-01",
+          "prev_reach": 231,
+          "reach": 182,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.7878787878787878
+        },
+        {
+          "cum_conv": 0.3120728929384966,
+          "period": "2022-01-01",
+          "prev_reach": 182,
+          "reach": 137,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.7527472527472527
+        },
+        {
+          "cum_conv": 0.2437357630979499,
+          "period": "2022-01-01",
+          "prev_reach": 137,
+          "reach": 107,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 0.781021897810219
+        },
+        {
+          "cum_conv": 1.0,
+          "period": "2022-04-01",
+          "prev_reach": null,
+          "reach": 517,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 0.8452611218568665,
+          "period": "2022-04-01",
+          "prev_reach": 517,
+          "reach": 437,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 0.8452611218568665
+        },
+        {
+          "cum_conv": 0.7620889748549323,
+          "period": "2022-04-01",
+          "prev_reach": 437,
+          "reach": 394,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 0.9016018306636155
+        },
+        {
+          "cum_conv": 0.655705996131528,
+          "period": "2022-04-01",
+          "prev_reach": 394,
+          "reach": 339,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.8604060913705583
+        },
+        {
+          "cum_conv": 0.5183752417794971,
+          "period": "2022-04-01",
+          "prev_reach": 339,
+          "reach": 268,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.7905604719764012
+        },
+        {
+          "cum_conv": 0.41392649903288203,
+          "period": "2022-04-01",
+          "prev_reach": 268,
+          "reach": 214,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.7985074626865671
+        },
+        {
+          "cum_conv": 0.30754352030947774,
+          "period": "2022-04-01",
+          "prev_reach": 214,
+          "reach": 159,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.7429906542056075
+        },
+        {
+          "cum_conv": 0.24177949709864605,
+          "period": "2022-04-01",
+          "prev_reach": 159,
+          "reach": 125,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 0.7861635220125787
+        },
+        {
+          "cum_conv": 1.0,
+          "period": "2022-07-01",
+          "prev_reach": null,
+          "reach": 606,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 0.8217821782178217,
+          "period": "2022-07-01",
+          "prev_reach": 606,
+          "reach": 498,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 0.8217821782178217
+        },
+        {
+          "cum_conv": 0.7112211221122112,
+          "period": "2022-07-01",
+          "prev_reach": 498,
+          "reach": 431,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 0.8654618473895582
+        },
+        {
+          "cum_conv": 0.6056105610561056,
+          "period": "2022-07-01",
+          "prev_reach": 431,
+          "reach": 367,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.851508120649652
+        },
+        {
+          "cum_conv": 0.4867986798679868,
+          "period": "2022-07-01",
+          "prev_reach": 367,
+          "reach": 295,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.8038147138964578
+        },
+        {
+          "cum_conv": 0.36633663366336633,
+          "period": "2022-07-01",
+          "prev_reach": 295,
+          "reach": 222,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.752542372881356
+        },
+        {
+          "cum_conv": 0.30033003300330036,
+          "period": "2022-07-01",
+          "prev_reach": 222,
+          "reach": 182,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.8198198198198198
+        },
+        {
+          "cum_conv": 0.24092409240924093,
+          "period": "2022-07-01",
+          "prev_reach": 182,
+          "reach": 146,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 0.8021978021978022
+        },
+        {
+          "cum_conv": 1.0,
+          "period": "2022-10-01",
+          "prev_reach": null,
+          "reach": 291,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 1.0652920962199313,
+          "period": "2022-10-01",
+          "prev_reach": 291,
+          "reach": 310,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 1.0652920962199313
+        },
+        {
+          "cum_conv": 1.0652920962199313,
+          "period": "2022-10-01",
+          "prev_reach": 310,
+          "reach": 310,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 1.0
+        },
+        {
+          "cum_conv": 0.9759450171821306,
+          "period": "2022-10-01",
+          "prev_reach": 310,
+          "reach": 284,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.9161290322580645
+        },
+        {
+          "cum_conv": 0.8762886597938144,
+          "period": "2022-10-01",
+          "prev_reach": 284,
+          "reach": 255,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.897887323943662
+        },
+        {
+          "cum_conv": 0.7147766323024055,
+          "period": "2022-10-01",
+          "prev_reach": 255,
+          "reach": 208,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.8156862745098039
+        },
+        {
+          "cum_conv": 0.6048109965635738,
+          "period": "2022-10-01",
+          "prev_reach": 208,
+          "reach": 176,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.8461538461538461
+        },
+        {
+          "cum_conv": 0.6048109965635738,
+          "period": "2022-10-01",
+          "prev_reach": 176,
+          "reach": 176,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 1.0
+        }
+      ]
+    },
+    "funnel_yearly": {
+      "call": {
+        "grain": "year"
+      },
+      "metric": "funnel_by_period",
+      "rows": [
+        {
+          "cum_conv": 1.0,
+          "period": "2020-01-01",
+          "prev_reach": null,
+          "reach": 121,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 0.6859504132231405,
+          "period": "2020-01-01",
+          "prev_reach": 121,
+          "reach": 83,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 0.6859504132231405
+        },
+        {
+          "cum_conv": 0.5950413223140496,
+          "period": "2020-01-01",
+          "prev_reach": 83,
+          "reach": 72,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 0.8674698795180723
+        },
+        {
+          "cum_conv": 0.4793388429752066,
+          "period": "2020-01-01",
+          "prev_reach": 72,
+          "reach": 58,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.8055555555555556
+        },
+        {
+          "cum_conv": 0.35537190082644626,
+          "period": "2020-01-01",
+          "prev_reach": 58,
+          "reach": 43,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.7413793103448276
+        },
+        {
+          "cum_conv": 0.256198347107438,
+          "period": "2020-01-01",
+          "prev_reach": 43,
+          "reach": 31,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.7209302325581395
+        },
+        {
+          "cum_conv": 0.18181818181818182,
+          "period": "2020-01-01",
+          "prev_reach": 31,
+          "reach": 22,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.7096774193548387
+        },
+        {
+          "cum_conv": 0.0,
+          "period": "2020-01-01",
+          "prev_reach": 22,
+          "reach": 0,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 0.0
+        },
+        {
+          "cum_conv": 1.0,
+          "period": "2021-01-01",
+          "prev_reach": null,
+          "reach": 1423,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 0.83134223471539,
+          "period": "2021-01-01",
+          "prev_reach": 1423,
+          "reach": 1183,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 0.83134223471539
+        },
+        {
+          "cum_conv": 0.7406886858749122,
+          "period": "2021-01-01",
+          "prev_reach": 1183,
+          "reach": 1054,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 0.8909551986475064
+        },
+        {
+          "cum_conv": 0.623330990864371,
+          "period": "2021-01-01",
+          "prev_reach": 1054,
+          "reach": 887,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.8415559772296015
+        },
+        {
+          "cum_conv": 0.5010541110330288,
+          "period": "2021-01-01",
+          "prev_reach": 887,
+          "reach": 713,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.8038331454340474
+        },
+        {
+          "cum_conv": 0.3752635277582572,
+          "period": "2021-01-01",
+          "prev_reach": 713,
+          "reach": 534,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.7489481065918654
+        },
+        {
+          "cum_conv": 0.30147575544624033,
+          "period": "2021-01-01",
+          "prev_reach": 534,
+          "reach": 429,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.8033707865168539
+        },
+        {
+          "cum_conv": 0.2438510189739986,
+          "period": "2021-01-01",
+          "prev_reach": 429,
+          "reach": 347,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 0.8088578088578089
+        },
+        {
+          "cum_conv": 1.0,
+          "period": "2022-01-01",
+          "prev_reach": null,
+          "reach": 1853,
+          "stage_name": "leads_registered",
+          "stage_order": 101,
+          "step_conv": null
+        },
+        {
+          "cum_conv": 0.8769562871019968,
+          "period": "2022-01-01",
+          "prev_reach": 1853,
+          "reach": 1625,
+          "stage_name": "leads_qualification",
+          "stage_order": 102,
+          "step_conv": 0.8769562871019968
+        },
+        {
+          "cum_conv": 0.7987048030221263,
+          "period": "2022-01-01",
+          "prev_reach": 1625,
+          "reach": 1480,
+          "stage_name": "initial_communication_success",
+          "stage_order": 103,
+          "step_conv": 0.9107692307692308
+        },
+        {
+          "cum_conv": 0.6945493793847815,
+          "period": "2022-01-01",
+          "prev_reach": 1480,
+          "reach": 1287,
+          "stage_name": "approach_success",
+          "stage_order": 104,
+          "step_conv": 0.8695945945945946
+        },
+        {
+          "cum_conv": 0.5661090124123044,
+          "period": "2022-01-01",
+          "prev_reach": 1287,
+          "reach": 1049,
+          "stage_name": "discussion_success",
+          "stage_order": 105,
+          "step_conv": 0.815073815073815
+        },
+        {
+          "cum_conv": 0.44576362655153806,
+          "period": "2022-01-01",
+          "prev_reach": 1049,
+          "reach": 826,
+          "stage_name": "offer_sent",
+          "stage_order": 106,
+          "step_conv": 0.7874165872259294
+        },
+        {
+          "cum_conv": 0.35294117647058826,
+          "period": "2022-01-01",
+          "prev_reach": 826,
+          "reach": 654,
+          "stage_name": "quotation_recieved",
+          "stage_order": 107,
+          "step_conv": 0.7917675544794189
+        },
+        {
+          "cum_conv": 0.29897463572585,
+          "period": "2022-01-01",
+          "prev_reach": 654,
+          "reach": 554,
+          "stage_name": "deal_won",
+          "stage_order": 108,
+          "step_conv": 0.8470948012232415
+        }
+      ]
+    },
     "gmv_by_industry": {
       "call": {
         "dim": "industry"
@@ -59663,6 +60561,1224 @@ window.METRICS_DATA = {
         }
       ]
     },
+    "step_conversion_trend": {
+      "call": {},
+      "metric": "step_conversion_trend",
+      "rows": [
+        {
+          "leads": 0,
+          "month": "2020-11-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.0
+        },
+        {
+          "leads": 10,
+          "month": "2020-11-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 58,
+          "month": "2020-12-01",
+          "stage": "approach_success",
+          "step_conv": 0.8055555555555556
+        },
+        {
+          "leads": 0,
+          "month": "2020-12-01",
+          "stage": "deal_won",
+          "step_conv": 0.0
+        },
+        {
+          "leads": 43,
+          "month": "2020-12-01",
+          "stage": "discussion_success",
+          "step_conv": 0.7413793103448276
+        },
+        {
+          "leads": 72,
+          "month": "2020-12-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.8674698795180723
+        },
+        {
+          "leads": 83,
+          "month": "2020-12-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.7477477477477478
+        },
+        {
+          "leads": 111,
+          "month": "2020-12-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 31,
+          "month": "2020-12-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7209302325581395
+        },
+        {
+          "leads": 22,
+          "month": "2020-12-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.7096774193548387
+        },
+        {
+          "leads": 64,
+          "month": "2021-01-01",
+          "stage": "approach_success",
+          "step_conv": 0.8311688311688312
+        },
+        {
+          "leads": 33,
+          "month": "2021-01-01",
+          "stage": "deal_won",
+          "step_conv": 1.064516129032258
+        },
+        {
+          "leads": 54,
+          "month": "2021-01-01",
+          "stage": "discussion_success",
+          "step_conv": 0.84375
+        },
+        {
+          "leads": 77,
+          "month": "2021-01-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.8279569892473119
+        },
+        {
+          "leads": 93,
+          "month": "2021-01-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.8611111111111112
+        },
+        {
+          "leads": 108,
+          "month": "2021-01-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 40,
+          "month": "2021-01-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7407407407407407
+        },
+        {
+          "leads": 31,
+          "month": "2021-01-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.775
+        },
+        {
+          "leads": 50,
+          "month": "2021-02-01",
+          "stage": "approach_success",
+          "step_conv": 0.847457627118644
+        },
+        {
+          "leads": 24,
+          "month": "2021-02-01",
+          "stage": "deal_won",
+          "step_conv": 0.9230769230769231
+        },
+        {
+          "leads": 46,
+          "month": "2021-02-01",
+          "stage": "discussion_success",
+          "step_conv": 0.92
+        },
+        {
+          "leads": 59,
+          "month": "2021-02-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.8805970149253731
+        },
+        {
+          "leads": 67,
+          "month": "2021-02-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.8481012658227848
+        },
+        {
+          "leads": 79,
+          "month": "2021-02-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 34,
+          "month": "2021-02-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7391304347826086
+        },
+        {
+          "leads": 26,
+          "month": "2021-02-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.7647058823529411
+        },
+        {
+          "leads": 78,
+          "month": "2021-03-01",
+          "stage": "approach_success",
+          "step_conv": 0.8210526315789474
+        },
+        {
+          "leads": 22,
+          "month": "2021-03-01",
+          "stage": "deal_won",
+          "step_conv": 0.7096774193548387
+        },
+        {
+          "leads": 58,
+          "month": "2021-03-01",
+          "stage": "discussion_success",
+          "step_conv": 0.7435897435897436
+        },
+        {
+          "leads": 95,
+          "month": "2021-03-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.9047619047619048
+        },
+        {
+          "leads": 105,
+          "month": "2021-03-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.860655737704918
+        },
+        {
+          "leads": 122,
+          "month": "2021-03-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 44,
+          "month": "2021-03-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7586206896551724
+        },
+        {
+          "leads": 31,
+          "month": "2021-03-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.7045454545454546
+        },
+        {
+          "leads": 68,
+          "month": "2021-04-01",
+          "stage": "approach_success",
+          "step_conv": 0.8947368421052632
+        },
+        {
+          "leads": 36,
+          "month": "2021-04-01",
+          "stage": "deal_won",
+          "step_conv": 0.9230769230769231
+        },
+        {
+          "leads": 58,
+          "month": "2021-04-01",
+          "stage": "discussion_success",
+          "step_conv": 0.8529411764705882
+        },
+        {
+          "leads": 76,
+          "month": "2021-04-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.8636363636363636
+        },
+        {
+          "leads": 88,
+          "month": "2021-04-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.7333333333333333
+        },
+        {
+          "leads": 120,
+          "month": "2021-04-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 43,
+          "month": "2021-04-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7413793103448276
+        },
+        {
+          "leads": 39,
+          "month": "2021-04-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.9069767441860465
+        },
+        {
+          "leads": 68,
+          "month": "2021-05-01",
+          "stage": "approach_success",
+          "step_conv": 0.8095238095238095
+        },
+        {
+          "leads": 26,
+          "month": "2021-05-01",
+          "stage": "deal_won",
+          "step_conv": 0.7428571428571429
+        },
+        {
+          "leads": 55,
+          "month": "2021-05-01",
+          "stage": "discussion_success",
+          "step_conv": 0.8088235294117647
+        },
+        {
+          "leads": 84,
+          "month": "2021-05-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.9032258064516129
+        },
+        {
+          "leads": 93,
+          "month": "2021-05-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.9789473684210527
+        },
+        {
+          "leads": 95,
+          "month": "2021-05-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 42,
+          "month": "2021-05-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7636363636363637
+        },
+        {
+          "leads": 35,
+          "month": "2021-05-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.8333333333333334
+        },
+        {
+          "leads": 66,
+          "month": "2021-06-01",
+          "stage": "approach_success",
+          "step_conv": 0.7764705882352941
+        },
+        {
+          "leads": 24,
+          "month": "2021-06-01",
+          "stage": "deal_won",
+          "step_conv": 0.8
+        },
+        {
+          "leads": 53,
+          "month": "2021-06-01",
+          "stage": "discussion_success",
+          "step_conv": 0.803030303030303
+        },
+        {
+          "leads": 85,
+          "month": "2021-06-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.8585858585858586
+        },
+        {
+          "leads": 99,
+          "month": "2021-06-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.8181818181818182
+        },
+        {
+          "leads": 121,
+          "month": "2021-06-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 38,
+          "month": "2021-06-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7169811320754716
+        },
+        {
+          "leads": 30,
+          "month": "2021-06-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.7894736842105263
+        },
+        {
+          "leads": 91,
+          "month": "2021-07-01",
+          "stage": "approach_success",
+          "step_conv": 0.9285714285714286
+        },
+        {
+          "leads": 36,
+          "month": "2021-07-01",
+          "stage": "deal_won",
+          "step_conv": 0.8571428571428571
+        },
+        {
+          "leads": 69,
+          "month": "2021-07-01",
+          "stage": "discussion_success",
+          "step_conv": 0.7582417582417582
+        },
+        {
+          "leads": 98,
+          "month": "2021-07-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.98
+        },
+        {
+          "leads": 100,
+          "month": "2021-07-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.9433962264150944
+        },
+        {
+          "leads": 106,
+          "month": "2021-07-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 56,
+          "month": "2021-07-01",
+          "stage": "offer_sent",
+          "step_conv": 0.8115942028985508
+        },
+        {
+          "leads": 42,
+          "month": "2021-07-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.75
+        },
+        {
+          "leads": 59,
+          "month": "2021-08-01",
+          "stage": "approach_success",
+          "step_conv": 0.7866666666666666
+        },
+        {
+          "leads": 27,
+          "month": "2021-08-01",
+          "stage": "deal_won",
+          "step_conv": 0.8709677419354839
+        },
+        {
+          "leads": 53,
+          "month": "2021-08-01",
+          "stage": "discussion_success",
+          "step_conv": 0.8983050847457628
+        },
+        {
+          "leads": 75,
+          "month": "2021-08-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.872093023255814
+        },
+        {
+          "leads": 86,
+          "month": "2021-08-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.7478260869565218
+        },
+        {
+          "leads": 115,
+          "month": "2021-08-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 35,
+          "month": "2021-08-01",
+          "stage": "offer_sent",
+          "step_conv": 0.660377358490566
+        },
+        {
+          "leads": 31,
+          "month": "2021-08-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.8857142857142857
+        },
+        {
+          "leads": 84,
+          "month": "2021-09-01",
+          "stage": "approach_success",
+          "step_conv": 0.8842105263157894
+        },
+        {
+          "leads": 26,
+          "month": "2021-09-01",
+          "stage": "deal_won",
+          "step_conv": 0.6666666666666666
+        },
+        {
+          "leads": 67,
+          "month": "2021-09-01",
+          "stage": "discussion_success",
+          "step_conv": 0.7976190476190477
+        },
+        {
+          "leads": 95,
+          "month": "2021-09-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.9405940594059405
+        },
+        {
+          "leads": 101,
+          "month": "2021-09-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.7481481481481481
+        },
+        {
+          "leads": 135,
+          "month": "2021-09-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 52,
+          "month": "2021-09-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7761194029850746
+        },
+        {
+          "leads": 39,
+          "month": "2021-09-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.75
+        },
+        {
+          "leads": 77,
+          "month": "2021-10-01",
+          "stage": "approach_success",
+          "step_conv": 0.8461538461538461
+        },
+        {
+          "leads": 39,
+          "month": "2021-10-01",
+          "stage": "deal_won",
+          "step_conv": 0.8863636363636364
+        },
+        {
+          "leads": 63,
+          "month": "2021-10-01",
+          "stage": "discussion_success",
+          "step_conv": 0.8181818181818182
+        },
+        {
+          "leads": 91,
+          "month": "2021-10-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.9381443298969072
+        },
+        {
+          "leads": 97,
+          "month": "2021-10-01",
+          "stage": "leads_qualification",
+          "step_conv": 1.0898876404494382
+        },
+        {
+          "leads": 89,
+          "month": "2021-10-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 51,
+          "month": "2021-10-01",
+          "stage": "offer_sent",
+          "step_conv": 0.8095238095238095
+        },
+        {
+          "leads": 44,
+          "month": "2021-10-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.8627450980392157
+        },
+        {
+          "leads": 67,
+          "month": "2021-11-01",
+          "stage": "approach_success",
+          "step_conv": 0.8701298701298701
+        },
+        {
+          "leads": 28,
+          "month": "2021-11-01",
+          "stage": "deal_won",
+          "step_conv": 0.9655172413793104
+        },
+        {
+          "leads": 50,
+          "month": "2021-11-01",
+          "stage": "discussion_success",
+          "step_conv": 0.746268656716418
+        },
+        {
+          "leads": 77,
+          "month": "2021-11-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.8555555555555555
+        },
+        {
+          "leads": 90,
+          "month": "2021-11-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.7692307692307693
+        },
+        {
+          "leads": 117,
+          "month": "2021-11-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 37,
+          "month": "2021-11-01",
+          "stage": "offer_sent",
+          "step_conv": 0.74
+        },
+        {
+          "leads": 29,
+          "month": "2021-11-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.7837837837837838
+        },
+        {
+          "leads": 115,
+          "month": "2021-12-01",
+          "stage": "approach_success",
+          "step_conv": 0.8098591549295775
+        },
+        {
+          "leads": 26,
+          "month": "2021-12-01",
+          "stage": "deal_won",
+          "step_conv": 0.5
+        },
+        {
+          "leads": 87,
+          "month": "2021-12-01",
+          "stage": "discussion_success",
+          "step_conv": 0.7565217391304347
+        },
+        {
+          "leads": 142,
+          "month": "2021-12-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.8658536585365854
+        },
+        {
+          "leads": 164,
+          "month": "2021-12-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.7592592592592593
+        },
+        {
+          "leads": 216,
+          "month": "2021-12-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 62,
+          "month": "2021-12-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7126436781609196
+        },
+        {
+          "leads": 52,
+          "month": "2021-12-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.8387096774193549
+        },
+        {
+          "leads": 109,
+          "month": "2022-01-01",
+          "stage": "approach_success",
+          "step_conv": 0.8790322580645161
+        },
+        {
+          "leads": 56,
+          "month": "2022-01-01",
+          "stage": "deal_won",
+          "step_conv": 1.0769230769230769
+        },
+        {
+          "leads": 91,
+          "month": "2022-01-01",
+          "stage": "discussion_success",
+          "step_conv": 0.8348623853211009
+        },
+        {
+          "leads": 124,
+          "month": "2022-01-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.9612403100775194
+        },
+        {
+          "leads": 129,
+          "month": "2022-01-01",
+          "stage": "leads_qualification",
+          "step_conv": 1.084033613445378
+        },
+        {
+          "leads": 119,
+          "month": "2022-01-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 76,
+          "month": "2022-01-01",
+          "stage": "offer_sent",
+          "step_conv": 0.8351648351648352
+        },
+        {
+          "leads": 52,
+          "month": "2022-01-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.6842105263157895
+        },
+        {
+          "leads": 56,
+          "month": "2022-02-01",
+          "stage": "approach_success",
+          "step_conv": 0.8888888888888888
+        },
+        {
+          "leads": 29,
+          "month": "2022-02-01",
+          "stage": "deal_won",
+          "step_conv": 0.8055555555555556
+        },
+        {
+          "leads": 48,
+          "month": "2022-02-01",
+          "stage": "discussion_success",
+          "step_conv": 0.8571428571428571
+        },
+        {
+          "leads": 63,
+          "month": "2022-02-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.9264705882352942
+        },
+        {
+          "leads": 68,
+          "month": "2022-02-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.68
+        },
+        {
+          "leads": 100,
+          "month": "2022-02-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 39,
+          "month": "2022-02-01",
+          "stage": "offer_sent",
+          "step_conv": 0.8125
+        },
+        {
+          "leads": 36,
+          "month": "2022-02-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.9230769230769231
+        },
+        {
+          "leads": 132,
+          "month": "2022-03-01",
+          "stage": "approach_success",
+          "step_conv": 0.8354430379746836
+        },
+        {
+          "leads": 22,
+          "month": "2022-03-01",
+          "stage": "deal_won",
+          "step_conv": 0.4489795918367347
+        },
+        {
+          "leads": 92,
+          "month": "2022-03-01",
+          "stage": "discussion_success",
+          "step_conv": 0.696969696969697
+        },
+        {
+          "leads": 158,
+          "month": "2022-03-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.8633879781420765
+        },
+        {
+          "leads": 183,
+          "month": "2022-03-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.8318181818181818
+        },
+        {
+          "leads": 220,
+          "month": "2022-03-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 67,
+          "month": "2022-03-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7282608695652174
+        },
+        {
+          "leads": 49,
+          "month": "2022-03-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.7313432835820896
+        },
+        {
+          "leads": 101,
+          "month": "2022-04-01",
+          "stage": "approach_success",
+          "step_conv": 0.9439252336448598
+        },
+        {
+          "leads": 67,
+          "month": "2022-04-01",
+          "stage": "deal_won",
+          "step_conv": 0.9571428571428572
+        },
+        {
+          "leads": 96,
+          "month": "2022-04-01",
+          "stage": "discussion_success",
+          "step_conv": 0.9504950495049505
+        },
+        {
+          "leads": 107,
+          "month": "2022-04-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.9385964912280702
+        },
+        {
+          "leads": 114,
+          "month": "2022-04-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.9827586206896551
+        },
+        {
+          "leads": 116,
+          "month": "2022-04-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 84,
+          "month": "2022-04-01",
+          "stage": "offer_sent",
+          "step_conv": 0.875
+        },
+        {
+          "leads": 70,
+          "month": "2022-04-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.8333333333333334
+        },
+        {
+          "leads": 73,
+          "month": "2022-05-01",
+          "stage": "approach_success",
+          "step_conv": 0.7448979591836735
+        },
+        {
+          "leads": 31,
+          "month": "2022-05-01",
+          "stage": "deal_won",
+          "step_conv": 1.0689655172413792
+        },
+        {
+          "leads": 56,
+          "month": "2022-05-01",
+          "stage": "discussion_success",
+          "step_conv": 0.7671232876712328
+        },
+        {
+          "leads": 98,
+          "month": "2022-05-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.8909090909090909
+        },
+        {
+          "leads": 110,
+          "month": "2022-05-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.7189542483660131
+        },
+        {
+          "leads": 153,
+          "month": "2022-05-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 42,
+          "month": "2022-05-01",
+          "stage": "offer_sent",
+          "step_conv": 0.75
+        },
+        {
+          "leads": 29,
+          "month": "2022-05-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.6904761904761905
+        },
+        {
+          "leads": 165,
+          "month": "2022-06-01",
+          "stage": "approach_success",
+          "step_conv": 0.873015873015873
+        },
+        {
+          "leads": 27,
+          "month": "2022-06-01",
+          "stage": "deal_won",
+          "step_conv": 0.45
+        },
+        {
+          "leads": 116,
+          "month": "2022-06-01",
+          "stage": "discussion_success",
+          "step_conv": 0.703030303030303
+        },
+        {
+          "leads": 189,
+          "month": "2022-06-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.8873239436619719
+        },
+        {
+          "leads": 213,
+          "month": "2022-06-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.8588709677419355
+        },
+        {
+          "leads": 248,
+          "month": "2022-06-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 88,
+          "month": "2022-06-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7586206896551724
+        },
+        {
+          "leads": 60,
+          "month": "2022-06-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.6818181818181818
+        },
+        {
+          "leads": 103,
+          "month": "2022-07-01",
+          "stage": "approach_success",
+          "step_conv": 0.9363636363636364
+        },
+        {
+          "leads": 79,
+          "month": "2022-07-01",
+          "stage": "deal_won",
+          "step_conv": 1.0394736842105263
+        },
+        {
+          "leads": 99,
+          "month": "2022-07-01",
+          "stage": "discussion_success",
+          "step_conv": 0.9611650485436893
+        },
+        {
+          "leads": 110,
+          "month": "2022-07-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.9090909090909091
+        },
+        {
+          "leads": 121,
+          "month": "2022-07-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.9918032786885246
+        },
+        {
+          "leads": 122,
+          "month": "2022-07-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 76,
+          "month": "2022-07-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7676767676767676
+        },
+        {
+          "leads": 76,
+          "month": "2022-07-01",
+          "stage": "quotation_recieved",
+          "step_conv": 1.0
+        },
+        {
+          "leads": 97,
+          "month": "2022-08-01",
+          "stage": "approach_success",
+          "step_conv": 0.8508771929824561
+        },
+        {
+          "leads": 37,
+          "month": "2022-08-01",
+          "stage": "deal_won",
+          "step_conv": 0.7872340425531915
+        },
+        {
+          "leads": 81,
+          "month": "2022-08-01",
+          "stage": "discussion_success",
+          "step_conv": 0.8350515463917526
+        },
+        {
+          "leads": 114,
+          "month": "2022-08-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.9421487603305785
+        },
+        {
+          "leads": 121,
+          "month": "2022-08-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.7289156626506024
+        },
+        {
+          "leads": 166,
+          "month": "2022-08-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 63,
+          "month": "2022-08-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7777777777777778
+        },
+        {
+          "leads": 47,
+          "month": "2022-08-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.746031746031746
+        },
+        {
+          "leads": 167,
+          "month": "2022-09-01",
+          "stage": "approach_success",
+          "step_conv": 0.8067632850241546
+        },
+        {
+          "leads": 30,
+          "month": "2022-09-01",
+          "stage": "deal_won",
+          "step_conv": 0.5084745762711864
+        },
+        {
+          "leads": 115,
+          "month": "2022-09-01",
+          "stage": "discussion_success",
+          "step_conv": 0.688622754491018
+        },
+        {
+          "leads": 207,
+          "month": "2022-09-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.80859375
+        },
+        {
+          "leads": 256,
+          "month": "2022-09-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.8050314465408805
+        },
+        {
+          "leads": 318,
+          "month": "2022-09-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 83,
+          "month": "2022-09-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7217391304347827
+        },
+        {
+          "leads": 59,
+          "month": "2022-09-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.7108433734939759
+        },
+        {
+          "leads": 165,
+          "month": "2022-10-01",
+          "stage": "approach_success",
+          "step_conv": 0.9269662921348315
+        },
+        {
+          "leads": 96,
+          "month": "2022-10-01",
+          "stage": "deal_won",
+          "step_conv": 0.96
+        },
+        {
+          "leads": 146,
+          "month": "2022-10-01",
+          "stage": "discussion_success",
+          "step_conv": 0.8848484848484849
+        },
+        {
+          "leads": 178,
+          "month": "2022-10-01",
+          "stage": "initial_communication_success",
+          "step_conv": 1.0348837209302326
+        },
+        {
+          "leads": 172,
+          "month": "2022-10-01",
+          "stage": "leads_qualification",
+          "step_conv": 1.0424242424242425
+        },
+        {
+          "leads": 165,
+          "month": "2022-10-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 122,
+          "month": "2022-10-01",
+          "stage": "offer_sent",
+          "step_conv": 0.8356164383561644
+        },
+        {
+          "leads": 100,
+          "month": "2022-10-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.819672131147541
+        },
+        {
+          "leads": 91,
+          "month": "2022-11-01",
+          "stage": "approach_success",
+          "step_conv": 0.875
+        },
+        {
+          "leads": 46,
+          "month": "2022-11-01",
+          "stage": "deal_won",
+          "step_conv": 0.9583333333333334
+        },
+        {
+          "leads": 73,
+          "month": "2022-11-01",
+          "stage": "discussion_success",
+          "step_conv": 0.8021978021978022
+        },
+        {
+          "leads": 104,
+          "month": "2022-11-01",
+          "stage": "initial_communication_success",
+          "step_conv": 0.9369369369369369
+        },
+        {
+          "leads": 111,
+          "month": "2022-11-01",
+          "stage": "leads_qualification",
+          "step_conv": 0.940677966101695
+        },
+        {
+          "leads": 118,
+          "month": "2022-11-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 58,
+          "month": "2022-11-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7945205479452054
+        },
+        {
+          "leads": 48,
+          "month": "2022-11-01",
+          "stage": "quotation_recieved",
+          "step_conv": 0.8275862068965517
+        },
+        {
+          "leads": 28,
+          "month": "2022-12-01",
+          "stage": "approach_success",
+          "step_conv": 1.0
+        },
+        {
+          "leads": 34,
+          "month": "2022-12-01",
+          "stage": "deal_won",
+          "step_conv": 1.2142857142857142
+        },
+        {
+          "leads": 36,
+          "month": "2022-12-01",
+          "stage": "discussion_success",
+          "step_conv": 1.2857142857142858
+        },
+        {
+          "leads": 28,
+          "month": "2022-12-01",
+          "stage": "initial_communication_success",
+          "step_conv": 1.037037037037037
+        },
+        {
+          "leads": 27,
+          "month": "2022-12-01",
+          "stage": "leads_qualification",
+          "step_conv": 3.375
+        },
+        {
+          "leads": 8,
+          "month": "2022-12-01",
+          "stage": "leads_registered",
+          "step_conv": null
+        },
+        {
+          "leads": 28,
+          "month": "2022-12-01",
+          "stage": "offer_sent",
+          "step_conv": 0.7777777777777778
+        },
+        {
+          "leads": 28,
+          "month": "2022-12-01",
+          "stage": "quotation_recieved",
+          "step_conv": 1.0
+        }
+      ]
+    },
     "stuck_per_stage": {
       "call": {},
       "metric": "stuck_per_stage",
@@ -60661,11 +62777,11 @@ window.METRICS_DATA = {
     }
   },
   "meta": {
-    "catalog_size": 47,
-    "catalog_used": 46,
+    "catalog_size": 49,
+    "catalog_used": 48,
     "data_cutoff": "2022-12-31",
     "db": "warehouse/saas.duckdb",
-    "generated_at": "2026-11-25T05:33:13+00:00",
+    "generated_at": "2026-11-25T07:52:19+00:00",
     "metrics_layer": "metrics/ (F4)",
     "rules": [
       "Setiap angka berasal dari satu pemanggilan metrik registry (F4).",
