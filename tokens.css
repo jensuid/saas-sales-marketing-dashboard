@@ -1,0 +1,175 @@
+/* ==========================================================================
+   F4a — Design tokens (D2) · SATU-SATUNYA sumber nilai visual · FROZEN
+   Arah: "Lilac Editorial" + palet ungu (keputusan review D2, F4b freeze).
+   Dipakai oleh: design/styleboard.html, design/wireframes/, design/prototype/
+   Aturan turunan docs/05 + docs/11:
+   satu warna aksen + netral, warna kedua hanya new vs renewal,
+   Rp dalam juta 1 desimal, persentase 1 desimal, tanggal UTC.
+   ========================================================================== */
+
+:root {
+  /* --- Kertas & tinta (lilac pucat, bukan krem; tinta tegas) ------------- */
+  --paper:        #F4F1F7;   /* latar kanvas */
+  --paper-raise:  #FCFBFD;   /* permukaan rail, drawer, panel kontrol */
+  --paper-sunk:   #E9E5EF;   /* jalur chart, sel kosong */
+  --ink:          #1B1822;   /* teks utama */
+  --ink-2:        #4A4754;   /* teks sekunder */
+  --ink-3:        #6F6A78;   /* label, sumbu — 4,7:1 di kertas */
+  --rule:         #DED8E8;   /* garis 1px */
+  --rule-soft:    #EAE6F0;
+
+  /* --- Aksen tunggal: ungu (new business / angka utama) ------------------ */
+  --accent:       #533B8C;
+  --accent-deep:  #3A2863;
+  --accent-tint:  #E9E3F5;
+
+  /* --- Warna kedua (hanya renewal / pembanding) -------------------------- */
+  --counter:      #2E6B5F;
+  --counter-tint: #DCE8E4;
+
+  /* --- Status (dipakai sangat hemat, hanya untuk sinyal anomali) --------- */
+  --warn:         #8A6A2A;
+  --good:         #2E6B5F;
+  --warn-tint:    #F0E7D6;
+  --good-tint:    #DDE8E4;
+
+  /* --- Palet chart (maks 5 seri; urutan = prioritas) -------------------- */
+  --chart-1: #533B8C;
+  --chart-2: #2E6B5F;
+  --chart-3: #9A7B3E;
+  --chart-4: #6C7358;
+  --chart-5: #8D8478;
+  --chart-grid: #DCD5E9;   /* gridline samar: baseline + 2 garis bantu */
+
+  /* --- Tipografi -------------------------------------------------------- */
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Helvetica, Arial, sans-serif;
+  --font-num: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+
+  --fs-micro: 10px;   /* eyebrow / kode metrik, letter-spacing lebar */
+  --fs-xs:    11px;   /* label sumbu, catatan */
+  --fs-sm:    12.5px; /* teks tabel, legenda */
+  --fs-base:  14px;   /* body */
+  --fs-md:    16px;   /* teks kartu */
+  --fs-card:  24px;   /* judul panel (pertanyaan) */
+  --fs-lg:    21px;   /* judul pertanyaan sekunder */
+  --fs-xl:    34px;   /* judul halaman (breakpoint kecil) */
+  --fs-kpi:   33px;   /* angka KPI */
+  --fs-hero:  34px;   /* judul halaman */
+
+  --lh-tight: 1.12;
+  --lh-base:  1.5;
+  --tracking-caps: 0.09em;
+
+  /* --- Spasi (skala 4) -------------------------------------------------- */
+  --s1: 4px;
+  --s2: 8px;
+  --s3: 12px;
+  --s4: 16px;
+  --s5: 24px;
+  --s6: 32px;
+  --s7: 48px;
+  --s8: 64px;
+  --s9: 88px;
+
+  /* --- Bentuk & elevasi (datar, editorial; tanpa drop-shadow) ----------- */
+  --radius: 0px;           /* arah final: sudut mati */
+  --radius-pill: 999px;
+  --border: 1px solid var(--rule);
+  --border-strong: 1px solid var(--ink);
+  --shadow: 0 1px 0 var(--rule);
+
+  /* --- Tata letak ------------------------------------------------------- */
+  --rail-w: 236px;
+  --page-max: 1180px;
+  --gap: 32px;
+  --focus-ring: 2px solid var(--accent-deep);
+}
+
+/* ==========================================================================
+   Primitif bersama (dipakai styleboard, wireframe, prototype)
+   ========================================================================== */
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: var(--fs-base);
+  line-height: var(--lh-base);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Kode metrik / eyebrow: selalu mono, huruf kecil, spasi lebar */
+.metric-ref,
+.eyebrow {
+  font-family: var(--font-num);
+  font-size: var(--fs-micro);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* Angka selalu tabular agar kolom tidak bergoyang */
+.num,
+.kpi-value,
+td.num,
+th.num {
+  font-family: var(--font-num);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Judul = pertanyaan bisnis, serif editorial */
+.title-question {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  line-height: var(--lh-tight);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--s2);
+}
+
+.card {
+  background: var(--paper-raise);
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: var(--s5);
+}
+
+.note {
+  font-size: var(--fs-sm);
+  color: var(--ink-2);
+  border-left: 2px solid var(--accent);
+  padding-left: var(--s3);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s1);
+  font-family: var(--font-num);
+  font-size: var(--fs-micro);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  border: 1px solid var(--rule);
+  border-radius: 0;
+  padding: 2px 8px;
+  white-space: nowrap;
+}
+
+.tag--accent { color: var(--accent-deep); border-color: var(--accent); background: var(--accent-tint); }
+.tag--lock   { color: var(--ink-2); border-style: dashed; }
+
+:focus-visible { outline: var(--focus-ring); outline-offset: 2px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+
+@media print {
+  :root { --paper: #FFFFFF; --paper-raise: #FFFFFF; --paper-sunk: #F2F0F5; }
+}

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F5 · Dashboard Sales &amp; Marketing</title>
+<link rel="stylesheet" href="tokens.css">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- ============================ RAIL ============================ -->
+  <aside class="rail">
+    <div class="brand">
+      <span class="mark">Sales &amp; Marketing</span>
+      <span class="sub metric-ref">BI dashboard · F5 · build</span>
+    </div>
+
+    <section>
+      <h2>Periode</h2>
+      <div class="seg" id="yearseg" role="group" aria-label="Filter periode">
+        <button data-year="all" aria-pressed="true">All</button>
+        <button data-year="2021" aria-pressed="false">2021</button>
+        <button data-year="2022" aria-pressed="false">2022</button>
+        <button data-year="2023" aria-pressed="false">2023</button>
+      </div>
+      <div class="legend-scope" style="margin-top:var(--s2)">
+        <p>Berlaku pada seri bulanan &amp; KPI turunannya. Kartu ber-chip
+          <b>all-time</b> tidak ikut berubah — metriknya memang tidak menerima periode.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Fokus irisan</h2>
+      <div class="field">
+        <label for="focus">Sorot satu irisan</label>
+        <select id="focus">
+          <option value="">Semua irisan</option>
+          <optgroup label="Channel">
+            <option value="source:CPC">CPC</option>
+            <option value="source:Refferal">Refferal</option>
+            <option value="source:Direct">Direct</option>
+            <option value="source:Organic Search">Organic Search</option>
+            <option value="source:Organic Social">Organic Social</option>
+          </optgroup>
+          <optgroup label="Industri">
+            <option value="industry:Technology">Technology</option>
+            <option value="industry:Retail">Retail</option>
+            <option value="industry:Finance">Finance</option>
+            <option value="industry:F&amp;B">F&amp;B</option>
+            <option value="industry:Education">Education</option>
+            <option value="industry:Hospitality">Hospitality</option>
+          </optgroup>
+          <optgroup label="Tier">
+            <option value="subscription_type:Business">Business</option>
+            <option value="subscription_type:Startup">Startup</option>
+            <option value="subscription_type:Enterprise">Enterprise</option>
+          </optgroup>
+        </select>
+      </div>
+      <div class="legend-scope">
+        <p>Fokus menyorot irisan pada chart yang memang punya dimensi itu; chart lain diberi tanda
+          <b>tidak difilter</b>. Tidak ada angka yang dihitung ulang dari subset yang tidak tersedia.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Batas data</h2>
+      <div class="legend-scope">
+        <p>· Aktivitas lead berhenti 30 Des 2022 → 2023 <b>renewal-only</b>.</p>
+        <p>· CAC selalu <b>proxy</b> (bulan deal, bukan bulan klik).</p>
+        <p>· Win rate slice &lt;30 lead ditandai <b>n kecil</b>.</p>
+        <p>· Snapshot tidak pernah digabung ke sumbu waktu.</p>
+        <p>· Survey hanya dari pelanggan yang menang.</p>
+      </div>
+    </section>
+
+    <div class="foot">
+      <div id="meta-line">memuat…</div>
+      <div style="margin-top:6px">sumber: metrics/ (F4) via scripts/export_dashboard_data.py</div>
+    </div>
+  </aside>
+
+  <!-- ============================ MAIN ============================ -->
+  <div class="main">
+    <header class="topbar">
+      <nav class="tabs" id="tabs" aria-label="Halaman"></nav>
+      <div class="tools">
+        <button class="btn" id="audit-open">Sumber angka</button>
+        <button class="btn" id="print-btn">Cetak</button>
+      </div>
+    </header>
+
+    <main class="view" id="view"></main>
+  </div>
+</div>
+
+<aside class="drawer" id="audit" aria-label="Sumber angka"></aside>
+<div class="scrim" id="scrim"></div>
+<div id="tip" role="status"></div>
+
+<!-- Satu sumber angka: file payload yang sama dengan prototipe beku (F4b). -->
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

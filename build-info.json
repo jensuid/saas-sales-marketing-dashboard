@@ -1,0 +1,36 @@
+{
+  "bundle": "F6 static dashboard",
+  "entrypoint": "index.html",
+  "files": {
+    "app.js": {
+      "bytes": 82635,
+      "sha256": "ec5aae278d5f41ba3390faa07265d5d43aac038ef22a2f487c8f71095a012a23"
+    },
+    "dashboard.css": {
+      "bytes": 13260,
+      "sha256": "321192f069c3416f69ba7e27c53bc1b01fcd83a9efae3ea72f42797645e951e4"
+    },
+    "data.js": {
+      "bytes": 271163,
+      "sha256": "3a87df66d7ad2777b60e572a28137956398196a6ecb7dbfa2cfe21186d11b5d3"
+    },
+    "index.html": {
+      "bytes": 4181,
+      "sha256": "dcf7febfb25e6958ac90390a94ecaaa682b8549e88e6a76e28444e1aa79d57d6"
+    },
+    "tokens.css": {
+      "bytes": 5564,
+      "sha256": "e149d3b97dd7b3d88b7e170b312727b375a7bd9dd8632cb9f101a4fd50dfb36d"
+    }
+  },
+  "rewrites": [
+    {
+      "from": "../design/tokens.css",
+      "to": "tokens.css"
+    },
+    {
+      "from": "../design/prototype/data.js",
+      "to": "data.js"
+    }
+  ]
+}
