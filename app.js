@@ -54,7 +54,7 @@
   const stageShort = (s) => STAGE_SHORT[s] || String(s || "").replace(/_/g, " ");
 
   /* ----------------------------- state ----------------------------------- */
-  const state = { page: "p1", year: "all", focus: "" };
+  const state = { page: "p1", year: "all", focus: "", drill: 1 };
   const focus = () => {
     if (!state.focus) return null;
     const i = state.focus.indexOf(":");
@@ -1082,6 +1082,48 @@
   }
 
 
+  /* ------------------- drill-through kontrak (Q4 di 07) ------------------- */
+  const DRILL_PAGE_SIZE = 15;
+  function drillCard() {
+    const id = state.year !== "all" && DATA["contract_detail_" + state.year]
+      ? "contract_detail_" + state.year : "contract_detail";
+    let pool = rows(id);
+    const f = focus();
+    const drillDim = !!f && (f.dim === "source" || f.dim === "industry" || f.dim === "subscription_type");
+    if (drillDim) pool = pool.filter((r) => r[f.dim] === f.value);
+    const pages = Math.max(1, Math.ceil(pool.length / DRILL_PAGE_SIZE));
+    if (state.drill > pages) state.drill = pages;
+    if (state.drill < 1) state.drill = 1;
+    const page = pool.slice((state.drill - 1) * DRILL_PAGE_SIZE, state.drill * DRILL_PAGE_SIZE);
+    const table = htmlTable([
+      { label: "Kontrak", num: true, value: (r) => num(r.contract_id) },
+      { label: "Akun", num: true, value: (r) => num(r.leads_id) },
+      { label: "Bulan", value: (r) => mlabel(r.contract_date) },
+      { label: "Source", value: (r) => srcLabel(r.source) },
+      { label: "Industri", value: (r) => r.industry },
+      { label: "Tier", value: (r) => r.subscription_type },
+      { label: "Seats", num: true, value: (r) => num(r.seats) },
+      { label: "GMV", num: true, value: (r) => jt(r.gmv) },
+      { label: "Diskon", value: (r) => r.discount_code || "—" },
+      { label: "Tipe", value: (r) => (r.is_renewal ? "Renewal" : "New") },
+    ], page);
+    const pager = '<div class="pager">' +
+      '<button class="btn" data-drill="prev"' + (state.drill <= 1 ? " disabled" : "") + ">‹ Sebelumnya</button>" +
+      '<span class="pinfo">hlm ' + num(state.drill) + " / " + num(pages) + " · " + num(pool.length) + " kontrak" +
+      (drillDim ? " · fokus " + esc(f.dim + ":" + f.value) : "") + "</span>" +
+      '<button class="btn" data-drill="next"' + (state.drill >= pages ? " disabled" : "") + ">Berikutnya ›</button>" +
+      "</div>";
+    return cardHTML({
+      id: "p5-drill", title: "Kontrak mana yang ada di balik angka ini?",
+      refs: "metric: contract_detail(filters)", chips: ["detail", "drill-through", "ber-halaman"],
+      sub: "Baris per kontrak dari metrik contract_detail — mengikuti filter periode dan fokus irisan " +
+        "(source / industri / tier). Paginasi hanya memotong tampilan; tidak ada angka dihitung ulang.",
+      body: table + pager,
+      note: "Aturan kolom (F5): sumber tidak punya nama akun, jadi akun tampil sebagai leads_id. " +
+        "Urutan deterministik (bulan kontrak, lalu id kontrak). 2023 = renewal-only.",
+    });
+  }
+
   /* ============================== HALAMAN 5 ============================== */
   function page5() {
     const a = agg(), p = prevAgg();
@@ -1144,6 +1186,9 @@
           ], tier),
         note: "Angka mengikuti periode terpilih; Enterprise termurah per seat di semua tahun (F-6).",
       }) +
+      "</div>" +
+      '<div class="grid g1">' +
+      drillCard() +
       "</div>" +
       '<div class="scope-row">' + scopeChip("filter periode: waterfall, porsi renewal, diskon, give-up", true) + scopeChip("renewal rate: tahun kohort", true) + scopeChip("jarak renewal: all-time", false) + "</div>" +
       '<footer class="pagefoot"><span>Sumber: metrics/revenue.py · retensi &amp; pricing</span><span>F5 · implementasi</span></footer>';
@@ -1458,10 +1503,22 @@
     const b = e.target.closest("button[data-year]");
     if (!b) return;
     state.year = b.dataset.year;
+    state.drill = 1;
     syncQuery();
     render(false);
   });
-  focusSel.addEventListener("change", () => { state.focus = focusSel.value; syncQuery(); render(false); });
+  focusSel.addEventListener("change", () => { state.focus = focusSel.value; state.drill = 1; syncQuery(); render(false); });
+
+  /* drill-through kontrak (Q4 di 07): paginasi tampilan — seleksi baris dari
+     dataset ekspor, bukan hitung ulang agregat. */
+  view.addEventListener("click", (e) => {
+    const b = e.target.closest("[data-drill]");
+    if (!b) return;
+    e.preventDefault();
+    if (b.dataset.drill === "prev" && state.drill > 1) state.drill -= 1;
+    if (b.dataset.drill === "next") state.drill += 1;
+    render(false);
+  });
 
   /* drawer audit — bukti satu sumber angka */
   function auditHTML() {

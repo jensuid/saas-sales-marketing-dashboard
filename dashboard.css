@@ -214,6 +214,7 @@
 /* Kartu chart */
 .grid { display: grid; gap: var(--gap); margin-bottom: var(--gap); align-items: start; }
 .g2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.g1 { grid-template-columns: minmax(0, 1fr); }
 .g3 { grid-template-columns: 1.55fr minmax(0, 1fr); }
 .g23 { grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); }
 .g4 { grid-template-columns: 1.1fr 0.9fr 1fr; }
@@ -273,6 +274,13 @@ table.data tr.focusrow td { background: var(--accent-tint); }
 table.data td .mini { color: var(--ink-3); font-size: var(--fs-xs); }
 table.data .bar-cell { position: relative; }
 table.data .bar-cell .in { position: absolute; left: 0; bottom: 2px; height: 2px; background: var(--accent); }
+
+/* drill-through kontrak (Q4 di 07) — paginasi tampilan */
+.pager { display: flex; align-items: center; gap: var(--s3); margin-top: var(--s3); flex-wrap: wrap; }
+.pager .btn { font-size: var(--fs-xs); padding: 4px 10px; }
+.pager .btn[disabled] { opacity: .35; cursor: default; }
+.pager .btn[disabled]:hover { border-color: var(--rule); color: var(--ink-2); }
+.pager .pinfo { font-family: var(--font-num); font-size: var(--fs-xs); color: var(--ink-3); margin-left: auto; }
 
 .pill-n { font-family: var(--font-num); font-size: 9.5px; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 0; padding: 0 5px; white-space: nowrap; }
 .pill-n.small { color: var(--warn); border-color: var(--warn); background: var(--warn-tint); }
