@@ -3,8 +3,8 @@
   "entrypoint": "index.html",
   "files": {
     "app.js": {
-      "bytes": 101904,
-      "sha256": "d5a656211d959592aeda83021a8a49b70b95c0f83451d73bd3709cb7b46a63a5"
+      "bytes": 102221,
+      "sha256": "4ab4d8a3bf14f722bfc50619ef53ef33b69c067c8a1b4c858bfbf1cabe4f9779"
     },
     "dashboard.css": {
       "bytes": 14442,

@@ -784,7 +784,13 @@
     // Grain bulan/kuartal (backlog #3 di 09): kuartal meredakan noise stage bawah.
     const tGrain = state.trendGrain || "month";
     const sct = tGrain === "quarter" ? rows("step_conversion_trend_quarterly") : rows("step_conversion_trend");
-    const topDrop = rows("dropoff_leads").slice().sort((x, y) => y.dropoff - x.dropoff).slice(0, 3).map((r) => r.stage_name);
+    // Tiga step dengan drop-off all-time terbesar — stage pertama dikecualikan:
+    // drop-off-nya (506) adalah abandoned-at-entry, bukan step conversion
+    // (step_conv-nya selalu kosong, garisnya tak menggambar — kartu p2-abandon).
+    const topDrop = rows("dropoff_leads")
+      .filter((r) => stages.indexOf(r.stage_name) > 0)
+      .sort((x, y) => (y.dropoff || 0) - (x.dropoff || 0))
+      .slice(0, 3).map((r) => r.stage_name);
     const trendMap = {};
     sct.forEach((r) => {
       if (state.year !== "all" && !(r.month || "").startsWith(state.year)) return;
