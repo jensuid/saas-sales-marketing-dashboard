@@ -54,7 +54,7 @@
   const stageShort = (s) => STAGE_SHORT[s] || String(s || "").replace(/_/g, " ");
 
   /* ----------------------------- state ----------------------------------- */
-  const state = { page: "p1", year: "all", focus: "", drill: 1, funnelMode: "all", funnelPeriod: "" };
+  const state = { page: "p1", year: "all", focus: "", drill: 1, funnelMode: "all", funnelPeriod: "", trendGrain: "month" };
   const focus = () => {
     if (!state.focus) return null;
     const i = state.focus.indexOf(":");
@@ -744,6 +744,7 @@
      hanya label fase di footer yang disesuaikan (F5 · implementasi). */
   function page2() {
     const a = agg();
+    const p = prevAgg();
     const reach = rows("stage_reach");
     const conv = rows("step_conversion");
     const ttd = rows("time_to_deal")[0];
@@ -780,7 +781,9 @@
     // Momentum event-month (docs/09 Q1): pivot bulan × stage dari
     // step_conversion_trend — reshape baris export, bukan hitung ulang agregat.
     // Tiga step dipilih dari drop-off all-time terbesar (seleksi baris).
-    const sct = rows("step_conversion_trend");
+    // Grain bulan/kuartal (backlog #3 di 09): kuartal meredakan noise stage bawah.
+    const tGrain = state.trendGrain || "month";
+    const sct = tGrain === "quarter" ? rows("step_conversion_trend_quarterly") : rows("step_conversion_trend");
     const topDrop = rows("dropoff_leads").slice().sort((x, y) => y.dropoff - x.dropoff).slice(0, 3).map((r) => r.stage_name);
     const trendMap = {};
     sct.forEach((r) => {
@@ -789,11 +792,24 @@
       row[r.stage] = r.step_conv;
     });
     const trendRows = Object.values(trendMap).sort((x, y) => (x.month < y.month ? -1 : 1));
+    const trendCtl = '<div class="pager" style="margin:0 0 var(--s3)">' +
+      ["month", "quarter"].map((g) =>
+        '<button class="btn" data-trend="' + g + '"' + (tGrain === g ? " disabled" : "") + ">" +
+        (g === "month" ? "Per bulan" : "Per kuartal") + "</button>").join("") + "</div>";
     const trendSeries = topDrop.map((s, i) => ({
       key: s,
       label: stageShort(s) + " → " + stageShort(stages[stages.indexOf(s) + 1]),
       color: SERIES_COLORS[i % 5],
     }));
+
+    // Delta KPI funnel (backlog #2 periodicity di 09): hanya saat tahun terpilih;
+    // guard n<30 — pembanding dengan kohort kecil tidak dihitung (aturan #5 di 04).
+    const kpiDelta = (cur, prev, kind, allTimeText) => {
+      if (state.year === "all") return allTimeText;
+      if (prev == null || p.registered < 30)
+        return '<span style="color:var(--ink-3)">n kecil' + (prev != null ? " (n " + num(p.registered) + " " + state.year + ")" : "") + "</span>";
+      return deltas(cur, prev, kind);
+    };
 
     // Funnel utama dipotong periode (backlog #1 di 09): all-time / per tahun /
     // per kuartal dari metrik funnel_by_period (reach kondisional). Pemilihan
@@ -827,9 +843,9 @@
       '<h1>Di mana pipeline bocor, dan kenapa?</h1>' +
       '<p class="sub">Funnel delapan stage dengan konversi antar-step dan kumulatif berdampingan; alasan berhenti, kecepatan deal, dan pipeline yang menggantung di akhir data.</p></div>' +
       '<div class="kpistrip">' +
-      kpiHTML({ name: "Leads", value: num(a.registered), metric: "leads_registered", jenis: "period", delta: "terdaftar pada periode terpilih" }) +
-      kpiHTML({ name: "Deal won", value: num(a.won), metric: "stage_reach", jenis: "cohort", delta: "leads dengan event deal_won" }) +
-      kpiHTML({ name: "Win rate", value: nf(a.winRate * 100, 1), unit: "%", metric: "win_rate_by_source", jenis: "dual", delta: "won ÷ registered periode" }) +
+      kpiHTML({ name: "Leads", value: num(a.registered), metric: "leads_registered", jenis: "period", delta: kpiDelta(a.registered, p && p.registered, null, "terdaftar pada periode terpilih") }) +
+      kpiHTML({ name: "Deal won", value: num(a.won), metric: "stage_reach", jenis: "cohort", delta: kpiDelta(a.won, p && p.won, null, "leads dengan event deal_won") }) +
+      kpiHTML({ name: "Win rate", value: nf(a.winRate * 100, 1), unit: "%", metric: "win_rate_by_source", jenis: "dual", delta: kpiDelta(a.winRate, p && p.winRate, "pp", "won ÷ registered periode") }) +
       kpiHTML({ name: "Median time-to-deal", value: num(Math.round(ttd.median_days)), unit: "hari", metric: "time_to_deal", jenis: "period", locked: true, delta: "p25–p75 " + num(Math.round(ttd.p25)) + "–" + num(Math.round(ttd.p75)) + " hari · n " + num(ttd.n_won) }) +
       kpiHTML({ name: "Open pipeline", value: num(open.open_leads), metric: "open_pipeline", jenis: "snapshot", locked: true, delta: "idle &gt;30d " + num(staleCut.idle_gt_30d) + " · &gt;90d " + num(staleCut.idle_gt_90d) }) +
       "</div>" +
@@ -849,8 +865,8 @@
       cardHTML({
         id: "p2-trend", title: "Kapan funnel melemah — di bulan dan step mana?", refs: "metric: step_conversion_trend", chips: ["period", "event-month"],
         sub: "Konversi antar-step per bulan EVENT (bukan kohort): yang maju bulan ini ÷ yang ada di stage sebelumnya bulan ini. Tiga step dengan drop-off all-time terbesar.",
-        body: mountDiv("p2-trend", 240),
-        note: "Atribusi bulan event — mencampur kohort dan tanpa censoring; pembandingnya heatmap kohort di bawah. Nilai bisa &gt;100% saat lead bulan sebelumnya maju di bulan ini. Pemilihan 3 step = seleksi baris drop-off, bukan hitung ulang.",
+        body: trendCtl + mountDiv("p2-trend", 240),
+        note: (tGrain === "quarter" ? "Grain kuartal: meratakan noise stage bawah yang jarang bermuatan. " : "") + "Atribusi bulan event — mencampur kohort dan tanpa censoring; pembandingnya heatmap kohort di bawah. Nilai bisa &gt;100% saat lead bulan sebelumnya maju di bulan ini. Pemilihan 3 step = seleksi baris drop-off, bukan hitung ulang.",
       }) +
       "</div>" +
       '<div class="grid g2">' +
@@ -923,7 +939,7 @@
         }),
         "p2-trend": (m) => lineChart(m, {
           rows: trendRows, series: trendSeries,
-          yFmt: (v) => pct(v, 0), xLabel: (r) => mlabel(r.month), height: 210,
+          yFmt: (v) => pct(v, 0), xLabel: (r) => (tGrain === "quarter" ? qlabel(r.month) : mlabel(r.month)), height: 210,
         }),
         "p2-ttd": (m) => boxplot(m, { p25: ttd.p25, median: ttd.median_days, p75: ttd.p75, max: ttd.max_days, note: "n " + num(ttd.n_won) + " deal" }),
         "p2-heat": (m) => heat(m, {
@@ -1667,6 +1683,12 @@
     if (fb) {
       state.funnelMode = fb.dataset.funnel;
       state.funnelPeriod = "";
+      render(false);
+      return;
+    }
+    const tb = e.target.closest("[data-trend]");
+    if (tb) {
+      state.trendGrain = tb.dataset.trend;
       render(false);
       return;
     }
