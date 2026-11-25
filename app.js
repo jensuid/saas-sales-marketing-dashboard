@@ -1202,34 +1202,46 @@
 
   /* ============================== HALAMAN 6 ============================== */
   function page6() {
-    const nps = rows("nps")[0] || {};
+    /* Parameterisasi tahun (opsi B, Q3 di 07 — change log 11): angka per tahun
+       berasal dari dataset ekspor terpisah (nps_2021, …), bukan recompute. */
+    const yr = state.year;
+    const yid = (id) => (yr !== "all" && DATA[id + "_" + yr] ? id + "_" + yr : id);
+    const yrows = (id) => rows(yid(id));
+    const emptyNote = (mount, text) => {
+      mount.innerHTML = '<p class="csub" style="margin:8px 0 0">' + esc(text) + "</p>";
+    };
+    const nps = yrows("nps")[0] || {};
+    const haveNps = (nps.n || 0) > 0;
     const csat = rows("csat").slice().sort((a, b) => a.csat - b.csat);
     const dims = [
-      { key: "nps_by_source", label: "Channel", field: "source" },
-      { key: "nps_by_industry", label: "Industri", field: "industry" },
-      { key: "nps_by_tier", label: "Tier", field: "subscription_type" },
+      { key: yid("nps_by_source"), label: "Channel", field: "source" },
+      { key: yid("nps_by_industry"), label: "Industri", field: "industry" },
+      { key: yid("nps_by_tier"), label: "Tier", field: "subscription_type" },
     ];
     const worst = csat[0] || {};
     const prettyDim = (d) => String(d).replace(/^csat_/, "").replace(/_/g, " ");
     const npsFmt = (v) => (v >= 0 ? "+" : "−") + nf(Math.abs(v) * 100, 1);
+    const emptyMsg = "Tidak ada survey pada " + yr + " — aktivitas lead berhenti 30 Des 2022 (renewal-only).";
 
     const html =
       '<div class="phead"><p class="eyebrow">Halaman 6 · Customer experience</p>' +
       '<h1>Apa kata pelanggan tentang proses sales kami?</h1>' +
-      '<p class="sub">Survey hanya mencakup lead yang deal (n = ' + num(nps.n) + '), dan tidak punya timestamp sendiri — atribusi memakai tanggal deal.</p></div>' +
+      '<p class="sub">' + (haveNps
+        ? "Survey hanya mencakup lead yang deal (n = " + num(nps.n) + "), dan tidak punya timestamp sendiri — atribusi memakai tanggal deal."
+        : "Tidak ada survey pada " + yr + " — aktivitas lead berhenti 30 Des 2022, 2023 renewal-only (temuan F-7).") + "</p></div>" +
       '<div class="kpistrip">' +
-      kpiHTML({ name: "NPS", value: npsFmt(nps.nps), unit: "", metric: "nps", jenis: "period", delta: "promoter − detractor · n " + num(nps.n) }) +
-      kpiHTML({ name: "Promoter", value: nf(nps.promoter_share * 100, 1), unit: "%", metric: "nps", jenis: "period", delta: "skor 9–10" }) +
-      kpiHTML({ name: "Pasif", value: nf(nps.passive_share * 100, 1), unit: "%", metric: "nps", jenis: "period", delta: "skor 7–8" }) +
-      kpiHTML({ name: "Detractor", value: nf(nps.detractor_share * 100, 1), unit: "%", metric: "nps", jenis: "period", delta: "skor ≤6" }) +
-      kpiHTML({ name: "Dimensi terlemah", value: nf(worst.csat, 2), unit: "/ 5", metric: "csat", jenis: "period", delta: prettyDim(worst.dimension) + " · skala 1–5" }) +
+      kpiHTML({ name: "NPS", value: haveNps ? npsFmt(nps.nps) : "—", unit: "", metric: "nps", jenis: "period", delta: haveNps ? "promoter − detractor · n " + num(nps.n) : "tidak ada survey pada " + yr }) +
+      kpiHTML({ name: "Promoter", value: haveNps ? nf(nps.promoter_share * 100, 1) : "—", unit: "%", metric: "nps", jenis: "period", delta: "skor 9–10" }) +
+      kpiHTML({ name: "Pasif", value: haveNps ? nf(nps.passive_share * 100, 1) : "—", unit: "%", metric: "nps", jenis: "period", delta: "skor 7–8" }) +
+      kpiHTML({ name: "Detractor", value: haveNps ? nf(nps.detractor_share * 100, 1) : "—", unit: "%", metric: "nps", jenis: "period", delta: "skor ≤6" }) +
+      kpiHTML({ name: "Dimensi terlemah", value: nf(worst.csat, 2), unit: "/ 5", metric: "csat", jenis: "period", locked: yr !== "all", delta: prettyDim(worst.dimension) + " · skala 1–5" }) +
       "</div>" +
       '<div class="grid g2">' +
       cardHTML({
-        id: "p6-csat", title: "Bagian proses mana yang paling lemah?", refs: "metric: csat", chips: ["period", "skala 1–5"],
+        id: "p6-csat", title: "Bagian proses mana yang paling lemah?", refs: "metric: csat", chips: ["all-time", "skala 1–5"],
         sub: "Rata-rata CSAT per dimensi. Respon Time paling rendah — titik perbaikan pertama.",
         body: mountDiv("p6-csat", 130),
-        note: "Skor 1–5, bukan persentase. Bandingkan antar dimensi, bukan terhadap NPS.",
+        note: "Skor 1–5, bukan persentase. Bandingkan antar dimensi, bukan terhadap NPS. All-time — tidak ikut filter periode.",
       }) +
       cardHTML({
         id: "p6-nps", title: "Apakah kepuasan berbeda antar channel, industri, dan tier?", refs: "metric: nps_by_dimension", chips: ["period", "n kecil"],
@@ -1240,23 +1252,23 @@
       "</div>" +
       '<div class="grid g2">' +
       cardHTML({
-        id: "p6-ttd", title: "Apakah deal yang lebih cepat lebih puas?", refs: "metric: nps_vs_time_to_deal", chips: ["all-time", "bucket durasi"],
+        id: "p6-ttd", title: "Apakah deal yang lebih cepat lebih puas?", refs: "metric: nps_vs_time_to_deal", chips: ["period", "bucket durasi"],
         sub: "NPS per bucket lama deal (registrasi → won). Semakin lama deal, semakin rendah NPS-nya.",
         body: mountDiv("p6-ttd", 130),
         note: "Bucket mengikuti sebaran time-to-deal (median 31 hari); atribusi tanggal deal, bukan tanggal survey.",
       }) +
       cardHTML({
-        id: "p6-monthly", title: "Bagaimana NPS bergerak antar bulan deal?", refs: "metric: nps_monthly", chips: ["all-time", "n kecil"],
+        id: "p6-monthly", title: "Bagaimana NPS bergerak antar bulan deal?", refs: "metric: nps_monthly", chips: ["period", "n kecil"],
         sub: "NPS per bulan won_at (kohort deal). Bulan dengan n <30 ditandai di tooltip.",
         body: mountDiv("p6-monthly", 200),
-        note: "Metrik all-time (keputusan Q3 di 07) — tidak ikut filter periode; bulan n kecil dibaca dengan hati-hati.",
+        note: "Bulan dengan n kecil dibaca dengan hati-hati; 2023 tidak punya survey (renewal-only).",
       }) +
       "</div>" +
       '<div class="grid g2">' +
       cardHTML({
-        id: "p6-note1", title: "Kenapa NPS tidak ikut filter periode?", refs: "keputusan Q3 di 07", chips: ["all-time"],
-        sub: "Survey tidak punya timestamp sendiri — atribusi memakai tanggal deal, dan metrik NPS belum menerima parameter tahun.",
-        body: '<p class="csub" style="margin:0">Keputusan Q3 di <code>07</code>: NPS tampil all-time dengan chip ALL-TIME. Parameterisasi tahun tetap backlog perubahan registry, bukan dihitung ulang di front-end.</p>',
+        id: "p6-note1", title: "Bagaimana filter periode bekerja di halaman ini?", refs: "opsi B Q3 di 07 · change log 11", chips: ["period", "registry"],
+        sub: "Metrik NPS kini menerima parameter tahun di registry — angka per tahun diekspor sebagai pemanggilan metrik terpisah.",
+        body: '<p class="csub" style="margin:0">Tidak ada perhitungan ulang di front-end (aturan satu-sumber). 2023 tidak punya survey sehingga NPS 2023 tampil kosong; <code>csat</code> tetap all-time (backlog parameterisasi).</p>',
       }) +
       cardHTML({
         id: "p6-note2", title: "Apa yang tidak boleh disimpulkan dari halaman ini?", refs: "aturan pelaporan 04", chips: ["aturan"],
@@ -1264,7 +1276,7 @@
         body: '<p class="csub" style="margin:0">Tidak ada data untuk lead yang gagal, sehingga NPS tinggi tidak berarti funnel sehat. Gunakan bersama halaman 2 (kebocoran) dan 4 (biaya).</p>',
       }) +
       "</div>" +
-      '<div class="scope-row">' + scopeChip("filter periode: metrik NPS all-time (keputusan Q3 di 07)", false) + scopeChip("fokus irisan: menyorot bar NPS", true) + "</div>" +
+      '<div class="scope-row">' + scopeChip("filter periode: metrik NPS ikut filter (csat all-time)", true) + scopeChip("fokus irisan: menyorot bar NPS", true) + "</div>" +
       '<footer class="pagefoot"><span>Sumber: metrics/cx.py · survey 901 deal</span><span>F5 · implementasi</span></footer>';
 
     return {
@@ -1279,8 +1291,16 @@
         "p6-nps-a": (m) => npsBlock(m, dims[0]),
         "p6-nps-b": (m) => npsBlock(m, dims[1]),
         "p6-nps-c": (m) => npsBlock(m, dims[2]),
-        "p6-ttd": (m) => npsBars(m, rows("nps_vs_time_to_deal"), (r) => r.bucket, null, (r) => "median " + days(r.median_days)),
-        "p6-monthly": (m) => npsTrend(m, rows("nps_monthly")),
+        "p6-ttd": (m) => {
+          const rs = yrows("nps_vs_time_to_deal");
+          if (!rs.length) return emptyNote(m, emptyMsg);
+          return npsBars(m, rs, (r) => r.bucket, null, (r) => "median " + days(r.median_days));
+        },
+        "p6-monthly": (m) => {
+          const rs = pick("nps_monthly");
+          if (!rs.length) return emptyNote(m, emptyMsg);
+          return npsTrend(m, rs);
+        },
       },
     };
 
@@ -1290,6 +1310,10 @@
       wrap.style.marginBottom = "var(--s5)";
       wrap.innerHTML = '<div class="mref" style="margin-bottom:6px">' + esc(dim.label) + "</div>";
       mount.appendChild(wrap);
+      if (!rs.length) {
+        wrap.innerHTML += '<p class="csub" style="margin:8px 0 0">' + esc(emptyMsg) + "</p>";
+        return;
+      }
       const box = document.createElement("div");
       wrap.appendChild(box);
       npsBars(box, rs.slice().sort((a, b) => a.nps - b.nps),

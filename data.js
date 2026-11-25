@@ -157,16 +157,16 @@ window.METRICS_DATA = {
     },
     {
       "atribusi": "won_at (tanggal deal)",
-      "catatan": "skala efektif 6-10 → catatan di tooltip (aturan #7 di 04)",
+      "catatan": "skala efektif 6-10 → catatan di tooltip (aturan #7 di 04); parameter `year` sejak F5 (change log 11)",
       "dipakai_dashboard": true,
-      "grain": "bulanan / all-time",
+      "grain": "all-time / per tahun (parameter `year`)",
       "jenis": "period",
       "katalog": "Customer Experience",
       "name": "nps"
     },
     {
       "atribusi": "won_at × slice",
-      "catatan": "korelasi channel × kepuasan; tier via kontrak pertama",
+      "catatan": "korelasi channel × kepuasan; tier via kontrak pertama; parameter `year` sejak F5 (change log 11)",
       "dipakai_dashboard": true,
       "grain": "per slice (quarterly untuk slice kecil)",
       "jenis": "period",
@@ -175,7 +175,7 @@ window.METRICS_DATA = {
     },
     {
       "atribusi": "won_at (tanggal deal)",
-      "catatan": "n <30 diberi tanda 'n kecil' di UI (aturan #5 di 04)",
+      "catatan": "n <30 diberi tanda 'n kecil' di UI (aturan #5 di 04); parameter `year` sejak F5 (change log 11)",
       "dipakai_dashboard": true,
       "grain": "bulanan (kohort deal)",
       "jenis": "period",
@@ -184,9 +184,9 @@ window.METRICS_DATA = {
     },
     {
       "atribusi": "won_at (tanggal deal)",
-      "catatan": "bucket dipilih mengikuti sebaran days_to_deal (median 31 hari); backlog F5 dari docs/06 — change log docs/11",
+      "catatan": "bucket dipilih mengikuti sebaran days_to_deal (median 31 hari); backlog F5 dari docs/06 — change log docs/11; parameter `year` sejak F5 (change log 11)",
       "dipakai_dashboard": true,
-      "grain": "per bucket durasi (all-time)",
+      "grain": "per bucket durasi (all-time / per tahun)",
       "jenis": "period",
       "katalog": "Customer Experience",
       "name": "nps_vs_time_to_deal"
@@ -3321,6 +3321,51 @@ window.METRICS_DATA = {
         }
       ]
     },
+    "nps_2021": {
+      "call": {
+        "year": "2021"
+      },
+      "metric": "nps",
+      "rows": [
+        {
+          "detractor_share": 0.11527377521613832,
+          "n": 347,
+          "nps": 0.17002881844380405,
+          "passive_share": 0.5994236311239193,
+          "promoter_share": 0.28530259365994237
+        }
+      ]
+    },
+    "nps_2022": {
+      "call": {
+        "year": "2022"
+      },
+      "metric": "nps",
+      "rows": [
+        {
+          "detractor_share": 0.09205776173285199,
+          "n": 554,
+          "nps": 0.22021660649819494,
+          "passive_share": 0.5956678700361011,
+          "promoter_share": 0.31227436823104693
+        }
+      ]
+    },
+    "nps_2023": {
+      "call": {
+        "year": "2023"
+      },
+      "metric": "nps",
+      "rows": [
+        {
+          "detractor_share": null,
+          "n": 0,
+          "nps": null,
+          "passive_share": null,
+          "promoter_share": null
+        }
+      ]
+    },
     "nps_by_industry": {
       "call": {
         "dim": "industry"
@@ -3359,6 +3404,92 @@ window.METRICS_DATA = {
         }
       ]
     },
+    "nps_by_industry_2021": {
+      "call": {
+        "dim": "industry",
+        "year": "2021"
+      },
+      "metric": "nps_by_dimension",
+      "rows": [
+        {
+          "industry": "Technology",
+          "n": 88,
+          "nps": 0.17045454545454541
+        },
+        {
+          "industry": "F&B",
+          "n": 75,
+          "nps": 0.3066666666666667
+        },
+        {
+          "industry": "Retail",
+          "n": 72,
+          "nps": 0.1111111111111111
+        },
+        {
+          "industry": "Finance",
+          "n": 44,
+          "nps": 0.022727272727272735
+        },
+        {
+          "industry": "Education",
+          "n": 42,
+          "nps": 0.2142857142857143
+        },
+        {
+          "industry": "Hospitality",
+          "n": 26,
+          "nps": 0.11538461538461539
+        }
+      ]
+    },
+    "nps_by_industry_2022": {
+      "call": {
+        "dim": "industry",
+        "year": "2022"
+      },
+      "metric": "nps_by_dimension",
+      "rows": [
+        {
+          "industry": "Technology",
+          "n": 153,
+          "nps": 0.2091503267973856
+        },
+        {
+          "industry": "Retail",
+          "n": 114,
+          "nps": 0.1754385964912281
+        },
+        {
+          "industry": "F&B",
+          "n": 93,
+          "nps": 0.22580645161290322
+        },
+        {
+          "industry": "Finance",
+          "n": 81,
+          "nps": 0.16049382716049382
+        },
+        {
+          "industry": "Education",
+          "n": 74,
+          "nps": 0.33783783783783783
+        },
+        {
+          "industry": "Hospitality",
+          "n": 39,
+          "nps": 0.28205128205128205
+        }
+      ]
+    },
+    "nps_by_industry_2023": {
+      "call": {
+        "dim": "industry",
+        "year": "2023"
+      },
+      "metric": "nps_by_dimension",
+      "rows": []
+    },
     "nps_by_source": {
       "call": {
         "dim": "source"
@@ -3392,6 +3523,82 @@ window.METRICS_DATA = {
         }
       ]
     },
+    "nps_by_source_2021": {
+      "call": {
+        "dim": "source",
+        "year": "2021"
+      },
+      "metric": "nps_by_dimension",
+      "rows": [
+        {
+          "n": 108,
+          "nps": 0.19444444444444448,
+          "source": "CPC"
+        },
+        {
+          "n": 83,
+          "nps": -0.024096385542168697,
+          "source": "Refferal"
+        },
+        {
+          "n": 69,
+          "nps": 0.2173913043478261,
+          "source": "Direct"
+        },
+        {
+          "n": 48,
+          "nps": 0.2916666666666667,
+          "source": "Organic Social"
+        },
+        {
+          "n": 39,
+          "nps": 0.28205128205128205,
+          "source": "Organic Search"
+        }
+      ]
+    },
+    "nps_by_source_2022": {
+      "call": {
+        "dim": "source",
+        "year": "2022"
+      },
+      "metric": "nps_by_dimension",
+      "rows": [
+        {
+          "n": 170,
+          "nps": 0.17058823529411765,
+          "source": "Refferal"
+        },
+        {
+          "n": 157,
+          "nps": 0.24840764331210188,
+          "source": "CPC"
+        },
+        {
+          "n": 99,
+          "nps": 0.24242424242424243,
+          "source": "Direct"
+        },
+        {
+          "n": 65,
+          "nps": 0.26153846153846155,
+          "source": "Organic Search"
+        },
+        {
+          "n": 63,
+          "nps": 0.20634920634920634,
+          "source": "Organic Social"
+        }
+      ]
+    },
+    "nps_by_source_2023": {
+      "call": {
+        "dim": "source",
+        "year": "2023"
+      },
+      "metric": "nps_by_dimension",
+      "rows": []
+    },
     "nps_by_tier": {
       "call": {
         "dim": "subscription_type"
@@ -3414,6 +3621,62 @@ window.METRICS_DATA = {
           "subscription_type": "Enterprise"
         }
       ]
+    },
+    "nps_by_tier_2021": {
+      "call": {
+        "dim": "subscription_type",
+        "year": "2021"
+      },
+      "metric": "nps_by_dimension",
+      "rows": [
+        {
+          "n": 148,
+          "nps": 0.2635135135135135,
+          "subscription_type": "Business"
+        },
+        {
+          "n": 124,
+          "nps": 0.1693548387096774,
+          "subscription_type": "Startup"
+        },
+        {
+          "n": 75,
+          "nps": -0.013333333333333336,
+          "subscription_type": "Enterprise"
+        }
+      ]
+    },
+    "nps_by_tier_2022": {
+      "call": {
+        "dim": "subscription_type",
+        "year": "2022"
+      },
+      "metric": "nps_by_dimension",
+      "rows": [
+        {
+          "n": 216,
+          "nps": 0.2916666666666667,
+          "subscription_type": "Business"
+        },
+        {
+          "n": 196,
+          "nps": 0.23469387755102042,
+          "subscription_type": "Startup"
+        },
+        {
+          "n": 142,
+          "nps": 0.09154929577464788,
+          "subscription_type": "Enterprise"
+        }
+      ]
+    },
+    "nps_by_tier_2023": {
+      "call": {
+        "dim": "subscription_type",
+        "year": "2023"
+      },
+      "metric": "nps_by_dimension",
+      "rows": []
     },
     "nps_monthly": {
       "call": {},
@@ -3570,6 +3833,77 @@ window.METRICS_DATA = {
           "nps": 0.0
         }
       ]
+    },
+    "nps_vs_time_to_deal_2021": {
+      "call": {
+        "year": "2021"
+      },
+      "metric": "nps_vs_time_to_deal",
+      "rows": [
+        {
+          "bucket": "≤ 24 hari",
+          "median_days": 22.848715277777778,
+          "n": 21,
+          "nps": 0.38095238095238093
+        },
+        {
+          "bucket": "25–31 hari",
+          "median_days": 27.98664351851852,
+          "n": 181,
+          "nps": 0.1712707182320442
+        },
+        {
+          "bucket": "32–38 hari",
+          "median_days": 33.53425925925926,
+          "n": 138,
+          "nps": 0.15217391304347827
+        },
+        {
+          "bucket": "≥ 39 hari",
+          "median_days": 38.92658564814815,
+          "n": 7,
+          "nps": -0.14285714285714285
+        }
+      ]
+    },
+    "nps_vs_time_to_deal_2022": {
+      "call": {
+        "year": "2022"
+      },
+      "metric": "nps_vs_time_to_deal",
+      "rows": [
+        {
+          "bucket": "≤ 24 hari",
+          "median_days": 22.93154513888889,
+          "n": 16,
+          "nps": 0.0625
+        },
+        {
+          "bucket": "25–31 hari",
+          "median_days": 28.143090277777777,
+          "n": 220,
+          "nps": 0.2590909090909091
+        },
+        {
+          "bucket": "32–38 hari",
+          "median_days": 34.01280092592592,
+          "n": 289,
+          "nps": 0.2179930795847751
+        },
+        {
+          "bucket": "≥ 39 hari",
+          "median_days": 39.03649305555555,
+          "n": 29,
+          "nps": 0.034482758620689655
+        }
+      ]
+    },
+    "nps_vs_time_to_deal_2023": {
+      "call": {
+        "year": "2023"
+      },
+      "metric": "nps_vs_time_to_deal",
+      "rows": []
     },
     "open_pipeline": {
       "call": {},
@@ -10760,7 +11094,7 @@ window.METRICS_DATA = {
     "catalog_used": 42,
     "data_cutoff": "2022-12-31",
     "db": "warehouse/saas.duckdb",
-    "generated_at": "2026-11-25T04:16:34+00:00",
+    "generated_at": "2026-11-25T04:32:44+00:00",
     "metrics_layer": "metrics/ (F4)",
     "rules": [
       "Setiap angka berasal dari satu pemanggilan metrik registry (F4).",

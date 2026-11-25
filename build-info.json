@@ -3,16 +3,16 @@
   "entrypoint": "index.html",
   "files": {
     "app.js": {
-      "bytes": 85589,
-      "sha256": "da28801b68098532386eae24962ae28a291892df0e9b7a83751869c38b90cb57"
+      "bytes": 86921,
+      "sha256": "0f9880d346157dce461cac82fba0670850aca4d08c33f42487706f79fdd27dc3"
     },
     "dashboard.css": {
       "bytes": 13260,
       "sha256": "321192f069c3416f69ba7e27c53bc1b01fcd83a9efae3ea72f42797645e951e4"
     },
     "data.js": {
-      "bytes": 275218,
-      "sha256": "7cd081c1453c7f26a29dcca993f2ac4d2ca0586865f746d45a2807a239eefea0"
+      "bytes": 282760,
+      "sha256": "faf0c1d2e8fbd62a76f460358857475e4fad8d0a1a53e6a0bb66111e0504b6a5"
     },
     "index.html": {
       "bytes": 4181,
