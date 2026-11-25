@@ -292,6 +292,10 @@ table.data .bar-cell .in { position: absolute; left: 0; bottom: 2px; height: 2px
   padding: 4px 8px;
   margin-left: auto;
 }
+/* legenda seri line chart (p2-trend) — sebelumnya identitas garis hanya via tooltip */
+.legend { display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); margin: 0 0 var(--s2); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; font-family: var(--font-ui); font-size: var(--fs-xs); color: var(--ink-2); }
+.legend i { width: 14px; height: 3px; display: inline-block; }
 
 /* status do painel de alertas (backlog F5) — cores de status dos tokens */
 .tag--alarm { color: var(--warn); border-color: var(--warn); background: var(--warn-tint); font-weight: 600; }

@@ -3,12 +3,12 @@
   "entrypoint": "index.html",
   "files": {
     "app.js": {
-      "bytes": 102221,
-      "sha256": "4ab4d8a3bf14f722bfc50619ef53ef33b69c067c8a1b4c858bfbf1cabe4f9779"
+      "bytes": 102566,
+      "sha256": "dc8d047833b5beb4aa9e6a7a95ccc874e4a7498064d729aefc43be0965a044d6"
     },
     "dashboard.css": {
-      "bytes": 14442,
-      "sha256": "1aaa694452aab081656d7239c8ba4e149638c7467e9e96a85f540e604e216cce"
+      "bytes": 14833,
+      "sha256": "2568065d1ab391251783872308543e6ec39a77557c2b2770d7deff2ec0569f6e"
     },
     "data.js": {
       "bytes": 1792029,

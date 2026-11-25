@@ -807,6 +807,10 @@
       label: stageShort(s) + " → " + stageShort(stages[stages.indexOf(s) + 1]),
       color: SERIES_COLORS[i % 5],
     }));
+    // Legenda seri (temuan user): lineChart hanya tooltip — tanpa legenda
+    // identitas garis tak terbaca. Warna diambil dari trendSeries sendiri.
+    const trendLegend = '<div class="legend">' + trendSeries.map((s) =>
+      '<span><i style="background:' + s.color + '"></i>' + esc(s.label) + "</span>").join("") + "</div>";
 
     // Delta KPI funnel (backlog #2 periodicity di 09): hanya saat tahun terpilih;
     // guard n<30 — pembanding dengan kohort kecil tidak dihitung (aturan #5 di 04).
@@ -871,7 +875,7 @@
       cardHTML({
         id: "p2-trend", title: "Kapan funnel melemah — di bulan dan step mana?", refs: "metric: step_conversion_trend", chips: ["period", "event-month"],
         sub: "Konversi antar-step per bulan EVENT (bukan kohort): yang maju bulan ini ÷ yang ada di stage sebelumnya bulan ini. Tiga step dengan drop-off all-time terbesar.",
-        body: trendCtl + mountDiv("p2-trend", 240),
+        body: trendCtl + trendLegend + mountDiv("p2-trend", 240),
         note: (tGrain === "quarter" ? "Grain kuartal: meratakan noise stage bawah yang jarang bermuatan. " : "") + "Atribusi bulan event — mencampur kohort dan tanpa censoring; pembandingnya heatmap kohort di bawah. Nilai bisa &gt;100% saat lead bulan sebelumnya maju di bulan ini. Pemilihan 3 step = seleksi baris drop-off, bukan hitung ulang.",
       }) +
       "</div>" +
