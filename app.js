@@ -848,6 +848,13 @@
         (nTop < 30 ? " Window kecil (n " + num(nTop) + " &lt; 30 lead) — baca bersama all-time." : "");
     }
 
+    const staleSeries = [
+      { key: "idle_gt_30d", label: "idle >30 hari", color: "var(--chart-3)" },
+      { key: "idle_gt_90d", label: "idle >90 hari", color: "var(--chart-1)" },
+    ];
+    const staleLegend = '<div class="legend">' + staleSeries.map((s) =>
+      '<span><i style="background:' + s.color + '"></i>' + esc(s.label) + "</span>").join("") + "</div>";
+
     const html =
       '<div class="phead"><p class="eyebrow">Halaman 2 · Funnel &amp; conversion</p>' +
       '<h1>Di mana pipeline bocor, dan kenapa?</h1>' +
@@ -869,7 +876,7 @@
       cardHTML({
         id: "p2-stale", title: "Berapa pipeline yang menggantung, dan sejak kapan?", refs: "metric: stale_open_pipeline_series", chips: ["snapshot", "quarterly"],
         sub: "Lead tidak-won yang idle lebih dari 30 dan 90 hari penuh, dihitung di akhir tiap kuartal.",
-        body: mountDiv("p2-stale", 240),
+        body: staleLegend + mountDiv("p2-stale", 240),
         note: "Snapshot retrospektif: nilai kuartal lama memakai pengetahuan penuh. Deret berhenti di Q4 2022 karena aktivitas berhenti.",
       }) +
       cardHTML({
@@ -941,10 +948,7 @@
           : { rows: funnelRows, label: (r) => r.stage_name, orderBy: "stage_order" }),
         "p2-stale": (m) => lineChart(m, {
           rows: stale,
-          series: [
-            { key: "idle_gt_30d", label: "idle >30 hari", color: "var(--chart-3)" },
-            { key: "idle_gt_90d", label: "idle >90 hari", color: "var(--chart-1)" },
-          ],
+          series: staleSeries,
           yFmt: (v) => num(v), xLabel: (r) => qlabel(r.period_end), height: 210,
         }),
         "p2-trend": (m) => lineChart(m, {
