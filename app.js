@@ -1211,13 +1211,14 @@
     ];
     const worst = csat[0] || {};
     const prettyDim = (d) => String(d).replace(/^csat_/, "").replace(/_/g, " ");
+    const npsFmt = (v) => (v >= 0 ? "+" : "−") + nf(Math.abs(v) * 100, 1);
 
     const html =
       '<div class="phead"><p class="eyebrow">Halaman 6 · Customer experience</p>' +
       '<h1>Apa kata pelanggan tentang proses sales kami?</h1>' +
       '<p class="sub">Survey hanya mencakup lead yang deal (n = ' + num(nps.n) + '), dan tidak punya timestamp sendiri — atribusi memakai tanggal deal.</p></div>' +
       '<div class="kpistrip">' +
-      kpiHTML({ name: "NPS", value: (nps.nps >= 0 ? "+" : "−") + nf(Math.abs(nps.nps) * 100, 1), unit: "", metric: "nps", jenis: "period", delta: "promoter − detractor · n " + num(nps.n) }) +
+      kpiHTML({ name: "NPS", value: npsFmt(nps.nps), unit: "", metric: "nps", jenis: "period", delta: "promoter − detractor · n " + num(nps.n) }) +
       kpiHTML({ name: "Promoter", value: nf(nps.promoter_share * 100, 1), unit: "%", metric: "nps", jenis: "period", delta: "skor 9–10" }) +
       kpiHTML({ name: "Pasif", value: nf(nps.passive_share * 100, 1), unit: "%", metric: "nps", jenis: "period", delta: "skor 7–8" }) +
       kpiHTML({ name: "Detractor", value: nf(nps.detractor_share * 100, 1), unit: "%", metric: "nps", jenis: "period", delta: "skor ≤6" }) +
@@ -1239,9 +1240,23 @@
       "</div>" +
       '<div class="grid g2">' +
       cardHTML({
-        id: "p6-note1", title: "Kenapa tidak ada scatter NPS vs time-to-deal?", refs: "batasan metric layer", chips: ["backlog F5"],
-        sub: "Metrik gabungan survey × lead belum ada di katalog, dan membuatnya mendadak di dashboard akan menduplikasi definisi.",
-        body: '<p class="csub" style="margin:0">Kandidat metrik F5: <code>nps_vs_time_to_deal</code> (bucket median time-to-deal × NPS, atribusi won_at) dan <code>nps_monthly</code> per kohort deal.</p>',
+        id: "p6-ttd", title: "Apakah deal yang lebih cepat lebih puas?", refs: "metric: nps_vs_time_to_deal", chips: ["all-time", "bucket durasi"],
+        sub: "NPS per bucket lama deal (registrasi → won). Semakin lama deal, semakin rendah NPS-nya.",
+        body: mountDiv("p6-ttd", 130),
+        note: "Bucket mengikuti sebaran time-to-deal (median 31 hari); atribusi tanggal deal, bukan tanggal survey.",
+      }) +
+      cardHTML({
+        id: "p6-monthly", title: "Bagaimana NPS bergerak antar bulan deal?", refs: "metric: nps_monthly", chips: ["all-time", "n kecil"],
+        sub: "NPS per bulan won_at (kohort deal). Bulan dengan n <30 ditandai di tooltip.",
+        body: mountDiv("p6-monthly", 200),
+        note: "Metrik all-time (keputusan Q3 di 07) — tidak ikut filter periode; bulan n kecil dibaca dengan hati-hati.",
+      }) +
+      "</div>" +
+      '<div class="grid g2">' +
+      cardHTML({
+        id: "p6-note1", title: "Kenapa NPS tidak ikut filter periode?", refs: "keputusan Q3 di 07", chips: ["all-time"],
+        sub: "Survey tidak punya timestamp sendiri — atribusi memakai tanggal deal, dan metrik NPS belum menerima parameter tahun.",
+        body: '<p class="csub" style="margin:0">Keputusan Q3 di <code>07</code>: NPS tampil all-time dengan chip ALL-TIME. Parameterisasi tahun tetap backlog perubahan registry, bukan dihitung ulang di front-end.</p>',
       }) +
       cardHTML({
         id: "p6-note2", title: "Apa yang tidak boleh disimpulkan dari halaman ini?", refs: "aturan pelaporan 04", chips: ["aturan"],
@@ -1249,7 +1264,7 @@
         body: '<p class="csub" style="margin:0">Tidak ada data untuk lead yang gagal, sehingga NPS tinggi tidak berarti funnel sehat. Gunakan bersama halaman 2 (kebocoran) dan 4 (biaya).</p>',
       }) +
       "</div>" +
-      '<div class="scope-row">' + scopeChip("filter periode: tidak tersedia pada metrik nps (all-time)", false) + scopeChip("fokus irisan: menyorot bar NPS", true) + "</div>" +
+      '<div class="scope-row">' + scopeChip("filter periode: metrik NPS all-time (keputusan Q3 di 07)", false) + scopeChip("fokus irisan: menyorot bar NPS", true) + "</div>" +
       '<footer class="pagefoot"><span>Sumber: metrics/cx.py · survey 901 deal</span><span>F5 · implementasi</span></footer>';
 
     return {
@@ -1264,6 +1279,8 @@
         "p6-nps-a": (m) => npsBlock(m, dims[0]),
         "p6-nps-b": (m) => npsBlock(m, dims[1]),
         "p6-nps-c": (m) => npsBlock(m, dims[2]),
+        "p6-ttd": (m) => npsBars(m, rows("nps_vs_time_to_deal"), (r) => r.bucket, null, (r) => "median " + days(r.median_days)),
+        "p6-monthly": (m) => npsTrend(m, rows("nps_monthly")),
       },
     };
 
@@ -1275,28 +1292,62 @@
       mount.appendChild(wrap);
       const box = document.createElement("div");
       wrap.appendChild(box);
+      npsBars(box, rs.slice().sort((a, b) => a.nps - b.nps),
+        (r) => (dim.field === "source" ? srcLabel(r[dim.field]) : String(r[dim.field])), dim.field);
+    }
+
+    /* Bar NPS divergen di sekitar nol — dipakai blok irisan & bucket time-to-deal. */
+    function npsBars(mount, rs, labelFn, dimField, extraTip) {
+      if (!rs.length) return;
       const lo = Math.min.apply(null, rs.map((r) => r.nps)), hi = Math.max.apply(null, rs.map((r) => r.nps));
-      chart(box, rs.length * 24 + 6, (svg, w, h) => {
+      chart(mount, rs.length * 24 + 6, (svg, w, h) => {
         const labelW = 138, valW = 96;
-        const zero = Math.max(0, Math.min(1, (0 - lo * 1.2) / ((hi - lo) * 1.4 || 1)));
         const span = Math.max(0.1, hi * 1.2 - Math.min(0, lo * 1.2));
         const X = (v) => labelW + ((v - Math.min(0, lo * 1.2)) / span) * (w - labelW - valW);
-        rs.slice().sort((a, b) => a.nps - b.nps).forEach((r, i) => {
+        rs.forEach((r, i) => {
           const y = 4 + i * 24;
-          const dimmed = focusActive(dim.field) && !isFocus(dim.field, r[dim.field]);
-          const sliceLabel = dim.field === "source" ? srcLabel(r[dim.field]) : String(r[dim.field]);
+          const dimmed = dimField && focusActive(dimField) && !isFocus(dimField, r[dimField]);
+          const sliceLabel = labelFn(r);
           el(svg, "text", { x: 0, y: y + 14, class: "lab", opacity: dimmed ? 0.4 : 1 }, sliceLabel.slice(0, 20));
           const x0 = X(Math.min(0, r.nps)), x1 = X(Math.max(0, r.nps));
           const rect = el(svg, "rect", {
             x: x0, y: y + 4, width: Math.max(1, x1 - x0), height: 12,
             fill: r.nps >= 0 ? "var(--chart-1)" : "var(--warn)", class: "mark", opacity: dimmed ? 0.2 : 0.9,
           });
-          tip(rect, sliceLabel + "\nNPS " + (r.nps >= 0 ? "+" : "−") + nf(Math.abs(r.nps) * 100, 1) + " · n " + num(r.n));
-          el(svg, "text", { x: w, y: y + 14, "text-anchor": "end", class: "val" },
-            (r.nps >= 0 ? "+" : "−") + nf(Math.abs(r.nps) * 100, 1));
+          tip(rect, sliceLabel + "\nNPS " + npsFmt(r.nps) + " · " + (r.n < 30 ? "n kecil " : "n ") + num(r.n) +
+            (extraTip ? "\n" + extraTip(r) : ""));
+          el(svg, "text", { x: w, y: y + 14, "text-anchor": "end", class: "val" }, npsFmt(r.nps));
           el(svg, "text", { x: w - 62, y: y + 14, "text-anchor": "end" }, (r.n < 30 ? "n kecil " : "n ") + num(r.n));
         });
         el(svg, "line", { x1: X(0), x2: X(0), y1: 0, y2: h, stroke: "var(--rule)" });
+      });
+    }
+
+    /* Garis NPS bulanan dengan baseline nol — nilai bulanan bisa negatif. */
+    function npsTrend(mount, rs) {
+      if (!rs.length) return;
+      chart(mount, 200, (svg, w, h) => {
+        const mm = { t: 10, r: 8, b: 20, l: 46 };
+        const pw = w - mm.l - mm.r, ph = h - mm.t - mm.b;
+        const lo = Math.min(0, Math.min.apply(null, rs.map((r) => r.nps)) * 1.2);
+        const hi = Math.max.apply(null, rs.map((r) => r.nps)) * 1.15;
+        const Y = (v) => mm.t + ph - ((v - lo) / (hi - lo)) * ph;
+        [hi, 0, lo].forEach((v) => {
+          el(svg, "line", { x1: mm.l, x2: w - mm.r, y1: Y(v), y2: Y(v), class: v === 0 ? "axis" : "gridline" });
+          el(svg, "text", { x: mm.l - 6, y: Y(v) + 3, "text-anchor": "end" }, (v >= 0 ? "+" : "−") + nf(Math.abs(v) * 100, 0) + "%");
+        });
+        const X = (i) => mm.l + (rs.length === 1 ? pw / 2 : (i / (rs.length - 1)) * pw);
+        const pts = rs.map((r, i) => [X(i), Y(r.nps)]);
+        el(svg, "path", {
+          d: pts.map((p, i) => (i ? "L" : "M") + p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" "),
+          fill: "none", stroke: "var(--chart-1)", "stroke-width": 1.7, class: "mark",
+        });
+        rs.forEach((r, i) => {
+          const c = el(svg, "circle", { cx: pts[i][0], cy: pts[i][1], r: 2.4, fill: "var(--chart-1)", class: "mark" });
+          tip(c, mlabel(r.month) + "\nNPS " + npsFmt(r.nps) + " · " + (r.n < 30 ? "n kecil " : "n ") + num(r.n));
+        });
+        spreadTicks(rs.map((r, i) => ({ pos: X(i), label: mlabel(r.month) })), 46).forEach((t) =>
+          el(svg, "text", { x: t.pos, y: h - 6, "text-anchor": "middle" }, t.label));
       });
     }
   }

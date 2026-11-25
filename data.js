@@ -174,6 +174,24 @@ window.METRICS_DATA = {
       "name": "nps_by_dimension"
     },
     {
+      "atribusi": "won_at (tanggal deal)",
+      "catatan": "n <30 diberi tanda 'n kecil' di UI (aturan #5 di 04)",
+      "dipakai_dashboard": true,
+      "grain": "bulanan (kohort deal)",
+      "jenis": "period",
+      "katalog": "Customer Experience",
+      "name": "nps_monthly"
+    },
+    {
+      "atribusi": "won_at (tanggal deal)",
+      "catatan": "bucket dipilih mengikuti sebaran days_to_deal (median 31 hari); backlog F5 dari docs/06 — change log docs/11",
+      "dipakai_dashboard": true,
+      "grain": "per bucket durasi (all-time)",
+      "jenis": "period",
+      "katalog": "Customer Experience",
+      "name": "nps_vs_time_to_deal"
+    },
+    {
       "atribusi": "data cutoff",
       "catatan": "snapshot tidak pernah digabung ke chart time-series (aturan #5 di 08)",
       "dipakai_dashboard": true,
@@ -3394,6 +3412,162 @@ window.METRICS_DATA = {
           "n": 217,
           "nps": 0.055299539170506895,
           "subscription_type": "Enterprise"
+        }
+      ]
+    },
+    "nps_monthly": {
+      "call": {},
+      "metric": "nps_monthly",
+      "rows": [
+        {
+          "month": "2021-01",
+          "n": 33,
+          "nps": 0.2727272727272727
+        },
+        {
+          "month": "2021-02",
+          "n": 24,
+          "nps": 0.29166666666666663
+        },
+        {
+          "month": "2021-03",
+          "n": 22,
+          "nps": -0.09090909090909091
+        },
+        {
+          "month": "2021-04",
+          "n": 36,
+          "nps": 0.3055555555555555
+        },
+        {
+          "month": "2021-05",
+          "n": 26,
+          "nps": 0.2692307692307692
+        },
+        {
+          "month": "2021-06",
+          "n": 24,
+          "nps": 0.041666666666666685
+        },
+        {
+          "month": "2021-07",
+          "n": 36,
+          "nps": 0.3055555555555556
+        },
+        {
+          "month": "2021-08",
+          "n": 27,
+          "nps": 0.07407407407407407
+        },
+        {
+          "month": "2021-09",
+          "n": 26,
+          "nps": 0.23076923076923075
+        },
+        {
+          "month": "2021-10",
+          "n": 39,
+          "nps": 0.20512820512820515
+        },
+        {
+          "month": "2021-11",
+          "n": 28,
+          "nps": -0.14285714285714285
+        },
+        {
+          "month": "2021-12",
+          "n": 26,
+          "nps": 0.11538461538461539
+        },
+        {
+          "month": "2022-01",
+          "n": 56,
+          "nps": 0.1607142857142857
+        },
+        {
+          "month": "2022-02",
+          "n": 29,
+          "nps": 0.13793103448275862
+        },
+        {
+          "month": "2022-03",
+          "n": 22,
+          "nps": 0.04545454545454544
+        },
+        {
+          "month": "2022-04",
+          "n": 67,
+          "nps": 0.2835820895522388
+        },
+        {
+          "month": "2022-05",
+          "n": 31,
+          "nps": 0.25806451612903225
+        },
+        {
+          "month": "2022-06",
+          "n": 27,
+          "nps": 0.3333333333333333
+        },
+        {
+          "month": "2022-07",
+          "n": 79,
+          "nps": 0.21518987341772153
+        },
+        {
+          "month": "2022-08",
+          "n": 37,
+          "nps": 0.13513513513513514
+        },
+        {
+          "month": "2022-09",
+          "n": 30,
+          "nps": 0.2666666666666666
+        },
+        {
+          "month": "2022-10",
+          "n": 96,
+          "nps": 0.2604166666666667
+        },
+        {
+          "month": "2022-11",
+          "n": 46,
+          "nps": 0.15217391304347824
+        },
+        {
+          "month": "2022-12",
+          "n": 34,
+          "nps": 0.29411764705882354
+        }
+      ]
+    },
+    "nps_vs_time_to_deal": {
+      "call": {},
+      "metric": "nps_vs_time_to_deal",
+      "rows": [
+        {
+          "bucket": "≤ 24 hari",
+          "median_days": 22.88539351851852,
+          "n": 37,
+          "nps": 0.24324324324324326
+        },
+        {
+          "bucket": "25–31 hari",
+          "median_days": 28.058645833333333,
+          "n": 401,
+          "nps": 0.21945137157107233
+        },
+        {
+          "bucket": "32–38 hari",
+          "median_days": 33.92523148148148,
+          "n": 427,
+          "nps": 0.19672131147540983
+        },
+        {
+          "bucket": "≥ 39 hari",
+          "median_days": 38.996637731481485,
+          "n": 36,
+          "nps": 0.0
         }
       ]
     },
@@ -10582,11 +10756,11 @@ window.METRICS_DATA = {
     }
   },
   "meta": {
-    "catalog_size": 41,
-    "catalog_used": 40,
+    "catalog_size": 43,
+    "catalog_used": 42,
     "data_cutoff": "2022-12-31",
     "db": "warehouse/saas.duckdb",
-    "generated_at": "2026-11-25T03:51:03+00:00",
+    "generated_at": "2026-11-25T04:16:34+00:00",
     "metrics_layer": "metrics/ (F4)",
     "rules": [
       "Setiap angka berasal dari satu pemanggilan metrik registry (F4).",
