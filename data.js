@@ -30,10 +30,10 @@ window.METRICS_DATA = {
       "name": "cac_proxy"
     },
     {
-      "atribusi": "expired_date (veredicto no cutoff)",
-      "catatan": "churn explícito (backlog F5): contrato vencido sem renovação; diferente do renewal rate (cohort de leads, censused) — aqui só contratos que já venceram entram",
+      "atribusi": "expired_date (verdik di cutoff)",
+      "catatan": "churn eksplisit (backlog F5): kontrak kedaluwarsa tanpa renewal; berbeda dari renewal rate (kohort leads, censused) — di sini hanya kontrak yang sudah kedaluwarsa yang dihitung",
       "dipakai_dashboard": true,
-      "grain": "all-time / per ano (parâmetro `year`)",
+      "grain": "all-time / per tahun (parameter `year`)",
       "jenis": "cohort",
       "katalog": "Retensi",
       "name": "churn_rate"
@@ -165,10 +165,10 @@ window.METRICS_DATA = {
       "name": "leads_registered"
     },
     {
-      "atribusi": "data cutoff (leads 2022-12-30, contratos 2023-12-30)",
-      "catatan": "regras fixas: stale>30d ≥1.000 alarm; churn ano-vs-ano >+10pp alarm; CAC proxy max/mediana >3x warn; CPL >3x warn; give-up >5% warn; slices de win rate n<30 info; NPS 2023 sem survey info",
+      "atribusi": "data cutoff (leads 2022-12-30, kontrak 2023-12-30)",
+      "catatan": "aturan tetap: stale>30d ≥1.000 alarm; churn tahun-vs-tahun >+10pp alarm; CAC proxy maks/median >3x warn; CPL >3x warn; give-up >5% warn; slice win rate n<30 info; NPS 2023 tanpa survey info",
       "dipakai_dashboard": true,
-      "grain": "snapshot (avaliado no cutoff)",
+      "grain": "snapshot (dinilai di cutoff)",
       "jenis": "snapshot",
       "katalog": "QA / Alerting",
       "name": "metric_alerts"
@@ -255,10 +255,10 @@ window.METRICS_DATA = {
       "name": "price_tier_mix"
     },
     {
-      "atribusi": "expired_date (projeção)",
-      "catatan": "forecast determinístico (backlog F5): GMV dos contratos ativos no cutoff que vencem depois dele, por mês de vencimento; assume 100% renewal pelo mesmo GMV e nenhuma new business (leads pararam em 30/12/2022) — não é extrapolação estatística",
+      "atribusi": "expired_date (proyeksi)",
+      "catatan": "forecast deterministik (backlog F5): GMV kontrak aktif di cutoff yang kedaluwarsa setelahnya, per bulan kedaluwarsa; mengasumsikan 100% renewal dengan GMV yang sama dan tanpa new business (leads berhenti 30/12/2022) — bukan ekstrapolasi statistik",
       "dipakai_dashboard": true,
-      "grain": "mensal (2024)",
+      "grain": "bulanan (2024)",
       "jenis": "period",
       "katalog": "Retensi",
       "name": "renewal_backlog"
@@ -52448,49 +52448,49 @@ window.METRICS_DATA = {
       "metric": "metric_alerts",
       "rows": [
         {
-          "detail": "churn 39,7% (vencidos 2023) vs 6,3% (2022); a leva de contratos 2022 assinados no pico venceu em 2023",
+          "detail": "churn 39,7% (kedaluwarsa 2023) vs 6,3% (2022); gelombang kontrak 2022 yang ditandatangani di puncak jatuh tempo 2023",
           "rule": "churn_rate_yoy",
           "status": "alarm",
           "threshold": 10.0,
           "value": 33.31708522025525
         },
         {
-          "detail": "open leads idle >30d no cutoff 2022-12-31; esperado: a atividade de leads parou em 30/12/2022 — o pipeline antigo nunca vai fechar",
+          "detail": "open leads idle >30d di cutoff 2022-12-31; wajar: aktivitas lead berhenti 30/12/2022 — pipeline lama tidak akan pernah close",
           "rule": "stale_open_pipeline_30d",
           "status": "alarm",
           "threshold": 1000.0,
           "value": 2457.0
         },
         {
-          "detail": "nenhum survey com deal won em 2023 (leads pararam em 30/12/2022); NPS/CSAT 2023 ficam vazios, não zero",
-          "rule": "nps_2023_sem_survey",
+          "detail": "tidak ada survey dengan deal won 2023 (lead berhenti 30/12/2022); NPS/CSAT 2023 tampil kosong, bukan nol",
+          "rule": "nps_2023_tanpa_survey",
           "status": "info",
           "threshold": 0.0,
           "value": 0.0
         },
         {
-          "detail": "87 de 129 slices source-mês com n<30 — win rate fica vazio neles (regra #5), não zero",
-          "rule": "win_rate_slices_n_pequeno",
+          "detail": "87 dari 129 slice source-bulan dengan n<30 — win rate dikosongkan di sana (aturan #5), bukan nol",
+          "rule": "win_rate_slices_n_kecil",
           "status": "info",
           "threshold": 30.0,
           "value": 87.0
         },
         {
-          "detail": "CAC proxy trimestral: máx 2,18 jt vs mediana 1,01 jt (2,16x)",
+          "detail": "CAC proxy kuartalan: maks 2,18 jt vs median 1,01 jt (2,16x)",
           "rule": "cac_proxy_outlier",
           "status": "ok",
           "threshold": 3.0,
           "value": 2.157340662759944
         },
         {
-          "detail": "CPL mensal: máx 500 rb vs mediana 252 rb (1,98x)",
+          "detail": "CPL bulanan: maks 500 rb vs median 252 rb (1,98x)",
           "rule": "cpl_outlier",
           "status": "ok",
           "threshold": 3.0,
           "value": 1.9841269841269842
         },
         {
-          "detail": "give-up 4,5% do GMV total (custo do programa de desconto)",
+          "detail": "give-up 4,5% dari GMV total (biaya program diskon)",
           "rule": "revenue_giveup_share",
           "status": "ok",
           "threshold": 0.05,
@@ -60665,7 +60665,7 @@ window.METRICS_DATA = {
     "catalog_used": 46,
     "data_cutoff": "2022-12-31",
     "db": "warehouse/saas.duckdb",
-    "generated_at": "2026-11-25T05:15:31+00:00",
+    "generated_at": "2026-11-25T05:33:13+00:00",
     "metrics_layer": "metrics/ (F4)",
     "rules": [
       "Setiap angka berasal dari satu pemanggilan metrik registry (F4).",

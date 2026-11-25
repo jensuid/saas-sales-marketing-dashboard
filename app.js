@@ -574,8 +574,8 @@
     return '<table class="data"><thead><tr>' + head + "</tr></thead><tbody>" + body + "</tbody></table>";
   }
 
-  /* ---------- alerting (backlog F5): formatação por regra ----------------
-     Os números vêm de metric_alerts; só o rótulo da unidade é por regra. */
+  /* ---------- alerting (backlog F5): format per aturan -------------------
+     Angkanya dari metric_alerts; hanya label satuannya yang per aturan. */
   const alertChip = (s) => '<span class="tag tag--' + esc(s) + '">' + esc(s) + "</span>";
   function alertVal(r) {
     switch (r.rule) {
@@ -597,21 +597,21 @@
     }
   }
 
-  /* -------- alerting (backlog F5): painel de status no cutoff ------------ */
+  /* -------- alerting (backlog F5): panel status di cutoff ---------------- */
   function alertCard() {
     const alerts = rows("metric_alerts");
     return cardHTML({
-      id: "p1-alerts", title: "O que precisa de atenção agora?",
-      refs: "metric: metric_alerts", chips: ["snapshot", "regras fixas"],
-      sub: "Sete regras de threshold fixas, avaliadas no cutoff dentro da metrics layer — o dashboard só exibe o veredicto.",
+      id: "p1-alerts", title: "Apa yang perlu diperhatikan sekarang?",
+      refs: "metric: metric_alerts", chips: ["snapshot", "aturan tetap"],
+      sub: "Tujuh aturan ambang tetap, dievaluasi di cutoff di dalam metrics layer — dashboard hanya menampilkan hasilnya.",
       body: htmlTable([
         { label: "Status", raw: true, value: (r) => alertChip(r.status) },
-        { label: "Regra", key: "rule" },
-        { label: "Valor", num: true, value: alertVal },
-        { label: "Limite", num: true, value: alertThr },
-        { label: "Detalhe", value: (r) => r.detail },
+        { label: "Aturan", key: "rule" },
+        { label: "Nilai", num: true, value: alertVal },
+        { label: "Ambang", num: true, value: alertThr },
+        { label: "Detail", value: (r) => r.detail },
       ], alerts),
-      note: "Alarme não é bug: stale pipeline e churn 2023 são consequências conhecidas do cutoff (a atividade de leads parou em 30/12/2022) — o painel torna o estado explícito em vez de esconder.",
+      note: "Alarm bukan bug: stale pipeline dan churn 2023 adalah konsekuensi cutoff yang sudah diketahui (aktivitas lead berhenti 30/12/2022) — panel ini membuat keadaan itu eksplisit, bukan menyembunyikannya.",
     });
   }
 
@@ -1168,23 +1168,23 @@
     });
   }
 
-  /* ------------- churn explícito + renewal backlog (backlog F5) ----------- */
+  /* ------------- churn eksplisit + renewal backlog (backlog F5) ----------- */
   function churnCard() {
     const all = rows("churn_rate")[0] || {};
     const perYear = ["2021", "2022", "2023"].map((y) => ({ y: y, c: (DATA["churn_rate_" + y] || { rows: [] }).rows[0] || {} }));
     return cardHTML({
-      id: "p5-churn", title: "Quanto da base vencida foi perdida de verdade?",
+      id: "p5-churn", title: "Berapa banyak dari basis yang kedaluwarsa yang benar-benar hilang?",
       refs: "metric: churn_rate", chips: ["cohort", "expired_date"],
-      sub: "Churn explícito: contrato vencido sem renovação ÷ contratos vencidos — diferente do renewal rate, que censura cohort imatura.",
+      sub: "Churn eksplisit: kontrak kedaluwarsa tanpa renewal ÷ kontrak kedaluwarsa — berbeda dari renewal rate, yang menyensor kohort belum matang.",
       body: htmlTable([
-        { label: "Ano de vencimento", key: "y" },
-        { label: "Vencidos", num: true, value: (r) => num(r.c.expired) },
-        { label: "Renovados", num: true, value: (r) => num(r.c.renewed) },
-        { label: "Churned", num: true, value: (r) => num(r.c.churned) },
-        { label: "Churn", num: true, value: (r) => pct(r.c.churn_rate, 1) },
+        { label: "Tahun kedaluwarsa", key: "y" },
+        { label: "Kedaluwarsa", num: true, value: (r) => num(r.c.expired) },
+        { label: "Renewal", num: true, value: (r) => num(r.c.renewed) },
+        { label: "Churn", num: true, value: (r) => num(r.c.churned) },
+        { label: "Churn rate", num: true, value: (r) => pct(r.c.churn_rate, 1) },
       ], perYear) +
-        '<p class="csub" style="margin-top:var(--s3)">All-time: ' + num(all.churned) + " de " + num(all.expired) + " contratos vencidos churnaram (" + pct(all.churn_rate, 1) + ").</p>",
-      note: "Só contratos vencidos até o cutoff (30/12/2023) entram — os demais ainda podem renovar. Os renovados por vencimento batem exatamente com os renewals do renewal rate (853).",
+        '<p class="csub" style="margin-top:var(--s3)">All-time: ' + num(all.churned) + " dari " + num(all.expired) + " kontrak kedaluwarsa churn (" + pct(all.churn_rate, 1) + ").</p>",
+      note: "Hanya kontrak yang kedaluwarsa sampai cutoff (30/12/2023) yang dihitung — sisanya masih bisa renewal. Yang renewal per kedaluwarsa persis sama dengan renewal di renewal rate (853).",
     });
   }
   function backlogCard() {
@@ -1192,12 +1192,12 @@
     const total = sum(backlog, (r) => r.gmv);
     const contracts = sum(backlog, (r) => r.contracts);
     return cardHTML({
-      id: "p5-backlog", title: "Quanto do próximo ciclo já está comprometido?",
-      refs: "metric: renewal_backlog", chips: ["forecast", "determinístico"],
-      sub: "GMV dos contratos ativos no cutoff que vencem depois dele, por mês de vencimento — " + jt(total) + " em " + num(contracts) + " contratos que, renovando, trazem exatamente isso.",
+      id: "p5-backlog", title: "Berapa banyak siklus berikutnya yang sudah terkomitmen?",
+      refs: "metric: renewal_backlog", chips: ["forecast", "deterministik"],
+      sub: "GMV kontrak aktif di cutoff yang kedaluwarsa setelahnya, per bulan kedaluwarsa — " + jt(total) + " dari " + num(contracts) + " kontrak yang, jika semuanya renewal, membawa persis ini.",
       body: mountDiv("p5-backlog", 300) +
-        '<div class="legend"><span><i style="background:var(--chart-2)"></i>GMV por mês de vencimento (projeção)</span></div>',
-      note: "Forecast determinístico, não estatístico: assume 100% renewal pelo mesmo GMV e nenhuma new business (a atividade de leads parou em 30/12/2022). CAC segue proxy — não existe dado de custo real nas fontes.",
+        '<div class="legend"><span><i style="background:var(--chart-2)"></i>GMV per bulan kedaluwarsa (proyeksi)</span></div>',
+      note: "Forecast deterministik, bukan statistik: mengasumsikan 100% renewal dengan GMV yang sama dan tanpa new business (aktivitas lead berhenti 30/12/2022). CAC tetap proxy — tidak ada data biaya nyata di sumber.",
     });
   }
 
