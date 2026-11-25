@@ -580,8 +580,11 @@
     const a = agg(), p = prevAgg();
     const rr = renewalKpi();
     const all = agg("all");
-    const arpaAll = (rows("revenue_kpis")[0] || {}).arpa;
-    const tier = rows("price_tier_mix");
+    /* Parameterisasi tahun (opsi B, Q3 di 07 — change log 11): ARPA & tier mix
+       memakai dataset per tahun hasil ekspor, bukan recompute front-end. */
+    const yid = (id) => (state.year !== "all" && DATA[id + "_" + state.year] ? id + "_" + state.year : id);
+    const rk = rows(yid("revenue_kpis"))[0] || {};
+    const tier = rows(yid("price_tier_mix"));
     const ind = rows("gmv_by_industry");
     const years = ["2021", "2022", "2023"].map((y) => ({ y: y, a: agg(y), r: renewalKpi(y) }));
     const kpis =
@@ -602,9 +605,11 @@
         delta: '<span style="color:var(--ink-3)">' + esc(rr.label) + " · " + num(rr.renewed) + "/" + num(rr.leads) + " akun</span>",
       }) +
       kpiHTML({
-        name: "ARPA", value: nf(arpaAll / 1e6, 1), prefix: "Rp", unit: "jt",
-        metric: "revenue_kpis", jenis: "period", locked: !!p,
-        delta: p ? '<span style="color:var(--ink-3)">tidak tersedia per tahun — metrik all-time</span>' : "GMV all-time ÷ akun berkontrak",
+        name: "ARPA", value: nf(rk.arpa / 1e6, 1), prefix: "Rp", unit: "jt",
+        metric: "revenue_kpis", jenis: "period",
+        delta: state.year === "all"
+          ? "GMV all-time ÷ akun berkontrak"
+          : "GMV " + state.year + " ÷ " + num(rk.accounts) + " akun " + state.year,
       });
 
     const html =
@@ -624,10 +629,10 @@
         note: "Klik tidak mengubah angka: nilai bulanan berasal langsung dari metrik, bukan hasil hitung ulang di browser.",
       }) +
       cardHTML({
-        id: "p1-tier", title: "Tier mana yang menyumbang GMV?", refs: "metric: price_tier_mix", chips: ["all-time", "donut ≤5"],
-        sub: "Porsi GMV all-time per subscription_type; harga efektif per seat ada di halaman 5.",
+        id: "p1-tier", title: "Tier mana yang menyumbang GMV?", refs: "metric: price_tier_mix", chips: ["period", "donut ≤5"],
+        sub: "Porsi GMV per subscription_type pada periode terpilih; harga efektif per seat ada di halaman 5.",
         body: mountDiv("p1-tier", 196) +
-          '<div class="legend">' + tier.map((t, i) => '<span><i style="background:' + SERIES_COLORS[i % 5] + '"></i>' + esc(t.subscription_type) + " · " + pct(t.gmv / all.gmv, 1) + "</span>").join("") + "</div>",
+          '<div class="legend">' + tier.map((t, i) => '<span><i style="background:' + SERIES_COLORS[i % 5] + '"></i>' + esc(t.subscription_type) + " · " + pct(t.gmv / a.gmv, 1) + "</span>").join("") + "</div>",
       }) +
       "</div>" +
       '<div class="grid g23">' +
@@ -672,7 +677,7 @@
         },
         "p1-tier": (m) => donut(m, {
           rows: tier, value: (r) => r.gmv, label: (r) => r.subscription_type,
-          fmt: (v) => jt(v), centerTop: jt(all.gmv), centerSub: "GMV all-time",
+          fmt: (v) => jt(v), centerTop: jt(a.gmv), centerSub: state.year === "all" ? "GMV all-time" : "GMV " + state.year,
           dimWhen: (r) => focusActive("subscription_type") && !isFocus("subscription_type", r.subscription_type),
         }),
         "p1-industry": (m) => hbar(m, {
@@ -994,7 +999,7 @@
       kpiHTML({ name: "Avg CPL", value: nf((avgCpl || 0) / 1e3, 0), prefix: "Rp", unit: "rb", metric: "cpl", jenis: "period", delta: num(totalLeads) + " lead dari semua channel" }) +
       kpiHTML({ name: "Channel terbaik", value: nf((best.rate || 0) * 100, 1), unit: "%", metric: "win_rate_by_source", jenis: "dual", delta: esc(srcLabel(best.source) || "—") + " · " + num(best.won) + "/" + num(best.reg) }) +
       kpiHTML({ name: "Channel terlemah", value: nf((worst.rate || 0) * 100, 1), unit: "%", metric: "win_rate_by_source", jenis: "dual", delta: esc(srcLabel(worst.source) || "—") + " · " + num(worst.won) + "/" + num(worst.reg) }) +
-      kpiHTML({ name: "CAC proxy", value: nf((sum(cacRows, (r) => r.spend) / Math.max(1, sum(cacRows, (r) => r.deals))) / 1e3, 0), prefix: "Rp", unit: "rb", metric: "cac_proxy", jenis: "period", locked: true, delta: "spend ÷ deal won, kuartal" }) +
+      kpiHTML({ name: "CAC proxy", value: nf((sum(cacRows, (r) => r.spend) / Math.max(1, sum(cacRows, (r) => r.deals))) / 1e3, 0), prefix: "Rp", unit: "rb", metric: "cac_proxy", jenis: "period", delta: "spend ÷ deal won kuartal · " + (state.year === "all" ? "semua periode" : state.year) }) +
       "</div>" +
       '<div class="grid g3">' +
       cardHTML({
@@ -1081,6 +1086,8 @@
   function page5() {
     const a = agg(), p = prevAgg();
     const rr = renewalKpi();
+    /* Parameterisasi tahun (opsi B, Q3 di 07 — change log 11). */
+    const yid = (id) => (state.year !== "all" && DATA[id + "_" + state.year] ? id + "_" + state.year : id);
     const disc = pick("discounted_deal_share");
     const discC = sum(disc, (r) => r.contracts), discD = sum(disc, (r) => r.discounted);
     const giveup = sum(pick("revenue_giveup"), (r) => r.revenue_giveup);
@@ -1088,7 +1095,7 @@
     const cohort = rows("renewal_by_cohort").filter((r) => state.year === "all" || (r.cohort_month || "").startsWith(state.year));
     const nrr = rows("net_gmv_retention").filter((r) => r.cohort_month && (state.year === "all" || r.cohort_month.startsWith(state.year)));
     const discRate = rows("avg_discount_rate");
-    const tier = rows("price_tier_mix");
+    const tier = rows(yid("price_tier_mix"));
     const renShare = a.gmv ? a.renewalGmv / a.gmv : null;
 
     const html =
@@ -1135,6 +1142,7 @@
             { label: "GMV", num: true, value: (r) => jt(r.gmv) },
             { label: "Rp/seat", num: true, value: (r) => nf(r.price_per_seat / 1e3, 1) + " rb" },
           ], tier),
+        note: "Angka mengikuti periode terpilih; Enterprise termurah per seat di semua tahun (F-6).",
       }) +
       "</div>" +
       '<div class="scope-row">' + scopeChip("filter periode: waterfall, porsi renewal, diskon, give-up", true) + scopeChip("renewal rate: tahun kohort", true) + scopeChip("jarak renewal: all-time", false) + "</div>" +
@@ -1212,13 +1220,14 @@
     };
     const nps = yrows("nps")[0] || {};
     const haveNps = (nps.n || 0) > 0;
-    const csat = rows("csat").slice().sort((a, b) => a.csat - b.csat);
+    const csat = yrows("csat").slice().sort((a, b) => a.csat - b.csat);
     const dims = [
       { key: yid("nps_by_source"), label: "Channel", field: "source" },
       { key: yid("nps_by_industry"), label: "Industri", field: "industry" },
       { key: yid("nps_by_tier"), label: "Tier", field: "subscription_type" },
     ];
     const worst = csat[0] || {};
+    const haveCsat = (worst.n || 0) > 0;
     const prettyDim = (d) => String(d).replace(/^csat_/, "").replace(/_/g, " ");
     const npsFmt = (v) => (v >= 0 ? "+" : "−") + nf(Math.abs(v) * 100, 1);
     const emptyMsg = "Tidak ada survey pada " + yr + " — aktivitas lead berhenti 30 Des 2022 (renewal-only).";
@@ -1234,14 +1243,14 @@
       kpiHTML({ name: "Promoter", value: haveNps ? nf(nps.promoter_share * 100, 1) : "—", unit: "%", metric: "nps", jenis: "period", delta: "skor 9–10" }) +
       kpiHTML({ name: "Pasif", value: haveNps ? nf(nps.passive_share * 100, 1) : "—", unit: "%", metric: "nps", jenis: "period", delta: "skor 7–8" }) +
       kpiHTML({ name: "Detractor", value: haveNps ? nf(nps.detractor_share * 100, 1) : "—", unit: "%", metric: "nps", jenis: "period", delta: "skor ≤6" }) +
-      kpiHTML({ name: "Dimensi terlemah", value: nf(worst.csat, 2), unit: "/ 5", metric: "csat", jenis: "period", locked: yr !== "all", delta: prettyDim(worst.dimension) + " · skala 1–5" }) +
+      kpiHTML({ name: "Dimensi terlemah", value: haveCsat ? nf(worst.csat, 2) : "—", unit: "/ 5", metric: "csat", jenis: "period", delta: haveCsat ? prettyDim(worst.dimension) + " · skala 1–5" : "tidak ada survey pada " + yr }) +
       "</div>" +
       '<div class="grid g2">' +
       cardHTML({
-        id: "p6-csat", title: "Bagian proses mana yang paling lemah?", refs: "metric: csat", chips: ["all-time", "skala 1–5"],
+        id: "p6-csat", title: "Bagian proses mana yang paling lemah?", refs: "metric: csat", chips: ["period", "skala 1–5"],
         sub: "Rata-rata CSAT per dimensi. Respon Time paling rendah — titik perbaikan pertama.",
         body: mountDiv("p6-csat", 130),
-        note: "Skor 1–5, bukan persentase. Bandingkan antar dimensi, bukan terhadap NPS. All-time — tidak ikut filter periode.",
+        note: "Skor 1–5, bukan persentase. Bandingkan antar dimensi, bukan terhadap NPS.",
       }) +
       cardHTML({
         id: "p6-nps", title: "Apakah kepuasan berbeda antar channel, industri, dan tier?", refs: "metric: nps_by_dimension", chips: ["period", "n kecil"],
@@ -1268,7 +1277,7 @@
       cardHTML({
         id: "p6-note1", title: "Bagaimana filter periode bekerja di halaman ini?", refs: "opsi B Q3 di 07 · change log 11", chips: ["period", "registry"],
         sub: "Metrik NPS kini menerima parameter tahun di registry — angka per tahun diekspor sebagai pemanggilan metrik terpisah.",
-        body: '<p class="csub" style="margin:0">Tidak ada perhitungan ulang di front-end (aturan satu-sumber). 2023 tidak punya survey sehingga NPS 2023 tampil kosong; <code>csat</code> tetap all-time (backlog parameterisasi).</p>',
+        body: '<p class="csub" style="margin:0">Semua metrik halaman ini menerima parameter tahun di registry (opsi B, Q3 di 07) — angka per tahun = pemanggilan metrik terpisah, bukan recompute front-end. 2023 tidak punya survey, jadi NPS &amp; CSAT 2023 tampil kosong.</p>',
       }) +
       cardHTML({
         id: "p6-note2", title: "Apa yang tidak boleh disimpulkan dari halaman ini?", refs: "aturan pelaporan 04", chips: ["aturan"],
@@ -1276,18 +1285,21 @@
         body: '<p class="csub" style="margin:0">Tidak ada data untuk lead yang gagal, sehingga NPS tinggi tidak berarti funnel sehat. Gunakan bersama halaman 2 (kebocoran) dan 4 (biaya).</p>',
       }) +
       "</div>" +
-      '<div class="scope-row">' + scopeChip("filter periode: metrik NPS ikut filter (csat all-time)", true) + scopeChip("fokus irisan: menyorot bar NPS", true) + "</div>" +
+      '<div class="scope-row">' + scopeChip("filter periode: seluruh metrik halaman ini ikut filter", true) + scopeChip("fokus irisan: menyorot bar NPS", true) + "</div>" +
       '<footer class="pagefoot"><span>Sumber: metrics/cx.py · survey 901 deal</span><span>F5 · implementasi</span></footer>';
 
     return {
       html: html,
       draws: {
-        "p6-csat": (m) => hbar(m, {
-          rows: csat, label: (r) => prettyDim(r.dimension), value: (r) => r.csat,
-          fmt: (v) => nf(v, 2), max: 5, rowH: 26, labelW: 150, valW: 44,
-          extra: (r) => "n " + num(r.n),
-          color: (r) => (r === worst ? "var(--warn)" : "var(--chart-2)"),
-        }),
+        "p6-csat": (m) => {
+          if (!csat.length || !haveCsat) return emptyNote(m, emptyMsg);
+          return hbar(m, {
+            rows: csat, label: (r) => prettyDim(r.dimension), value: (r) => r.csat,
+            fmt: (v) => nf(v, 2), max: 5, rowH: 26, labelW: 150, valW: 44,
+            extra: (r) => "n " + num(r.n),
+            color: (r) => (r === worst ? "var(--warn)" : "var(--chart-2)"),
+          });
+        },
         "p6-nps-a": (m) => npsBlock(m, dims[0]),
         "p6-nps-b": (m) => npsBlock(m, dims[1]),
         "p6-nps-c": (m) => npsBlock(m, dims[2]),

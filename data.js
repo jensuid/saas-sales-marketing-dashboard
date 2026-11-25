@@ -49,9 +49,9 @@ window.METRICS_DATA = {
     },
     {
       "atribusi": "won_at (tanggal deal)",
-      "catatan": "",
+      "catatan": "parameter `year` sejak F5 (change log 11)",
       "dipakai_dashboard": true,
-      "grain": "per dimensi (1-5)",
+      "grain": "per dimensi (1-5) / per tahun",
       "jenis": "period",
       "katalog": "Customer Experience",
       "name": "csat"
@@ -220,9 +220,9 @@ window.METRICS_DATA = {
     },
     {
       "atribusi": "contract_date",
-      "catatan": "Enterprise termurah per seat (F-6)",
+      "catatan": "Enterprise termurah per seat (F-6, berlaku di semua tahun); parameter `year` sejak F5 (change log 11)",
       "dipakai_dashboard": true,
-      "grain": "per subscription_type",
+      "grain": "per subscription_type (all-time / per tahun)",
       "jenis": "period",
       "katalog": "Pricing & Discount",
       "name": "price_tier_mix"
@@ -265,9 +265,9 @@ window.METRICS_DATA = {
     },
     {
       "atribusi": "contract_date",
-      "catatan": "",
+      "catatan": "parameter `year` sejak F5 (change log 11) — ARPA/avg deal per tahun",
       "dipakai_dashboard": true,
-      "grain": "all-time (big number)",
+      "grain": "all-time / per tahun (parameter `year`)",
       "jenis": "period",
       "katalog": "North Star / Revenue",
       "name": "revenue_kpis"
@@ -2199,6 +2199,90 @@ window.METRICS_DATA = {
           "csat": 3.195338512763596,
           "dimension": "csat_communication",
           "n": 901
+        }
+      ]
+    },
+    "csat_2021": {
+      "call": {
+        "year": "2021"
+      },
+      "metric": "csat",
+      "rows": [
+        {
+          "csat": 2.6657060518731988,
+          "dimension": "csat_response_time",
+          "n": 347
+        },
+        {
+          "csat": 2.8184438040345823,
+          "dimension": "csat_pre_sales_information",
+          "n": 347
+        },
+        {
+          "csat": 2.867435158501441,
+          "dimension": "csat_product_knowledge",
+          "n": 347
+        },
+        {
+          "csat": 3.2420749279538903,
+          "dimension": "csat_communication",
+          "n": 347
+        }
+      ]
+    },
+    "csat_2022": {
+      "call": {
+        "year": "2022"
+      },
+      "metric": "csat",
+      "rows": [
+        {
+          "csat": 2.6498194945848375,
+          "dimension": "csat_response_time",
+          "n": 554
+        },
+        {
+          "csat": 2.803249097472924,
+          "dimension": "csat_product_knowledge",
+          "n": 554
+        },
+        {
+          "csat": 2.9097472924187726,
+          "dimension": "csat_pre_sales_information",
+          "n": 554
+        },
+        {
+          "csat": 3.1660649819494586,
+          "dimension": "csat_communication",
+          "n": 554
+        }
+      ]
+    },
+    "csat_2023": {
+      "call": {
+        "year": "2023"
+      },
+      "metric": "csat",
+      "rows": [
+        {
+          "csat": null,
+          "dimension": "csat_pre_sales_information",
+          "n": 0
+        },
+        {
+          "csat": null,
+          "dimension": "csat_product_knowledge",
+          "n": 0
+        },
+        {
+          "csat": null,
+          "dimension": "csat_response_time",
+          "n": 0
+        },
+        {
+          "csat": null,
+          "dimension": "csat_communication",
+          "n": 0
         }
       ]
     },
@@ -5119,6 +5203,84 @@ window.METRICS_DATA = {
         }
       ]
     },
+    "price_tier_mix_2021": {
+      "call": {
+        "year": "2021"
+      },
+      "metric": "price_tier_mix",
+      "rows": [
+        {
+          "contracts": 148,
+          "gmv": 144350000.0,
+          "price_per_seat": 23625.20458265139,
+          "subscription_type": "Business"
+        },
+        {
+          "contracts": 124,
+          "gmv": 312940000.0,
+          "price_per_seat": 19145.916182318753,
+          "subscription_type": "Startup"
+        },
+        {
+          "contracts": 75,
+          "gmv": 321097500.0,
+          "price_per_seat": 14415.151515151516,
+          "subscription_type": "Enterprise"
+        }
+      ]
+    },
+    "price_tier_mix_2022": {
+      "call": {
+        "year": "2022"
+      },
+      "metric": "price_tier_mix",
+      "rows": [
+        {
+          "contracts": 362,
+          "gmv": 417900000.0,
+          "price_per_seat": 22329.682073203312,
+          "subscription_type": "Business"
+        },
+        {
+          "contracts": 299,
+          "gmv": 712140000.0,
+          "price_per_seat": 18618.039215686276,
+          "subscription_type": "Startup"
+        },
+        {
+          "contracts": 218,
+          "gmv": 922200000.0,
+          "price_per_seat": 14227.090404196235,
+          "subscription_type": "Enterprise"
+        }
+      ]
+    },
+    "price_tier_mix_2023": {
+      "call": {
+        "year": "2023"
+      },
+      "metric": "price_tier_mix",
+      "rows": [
+        {
+          "contracts": 210,
+          "gmv": 307625000.0,
+          "price_per_seat": 25000.0,
+          "subscription_type": "Business"
+        },
+        {
+          "contracts": 187,
+          "gmv": 488000000.0,
+          "price_per_seat": 20000.0,
+          "subscription_type": "Startup"
+        },
+        {
+          "contracts": 131,
+          "gmv": 585450000.0,
+          "price_per_seat": 15000.0,
+          "subscription_type": "Enterprise"
+        }
+      ]
+    },
     "renewal_by_cohort": {
       "call": {},
       "metric": "renewal_by_cohort",
@@ -5342,6 +5504,57 @@ window.METRICS_DATA = {
           "gmv_total": 4211702500.0,
           "new_gmv": 2084002500.0,
           "renewal_gmv": 2127700000.0
+        }
+      ]
+    },
+    "revenue_kpis_2021": {
+      "call": {
+        "year": "2021"
+      },
+      "metric": "revenue_kpis",
+      "rows": [
+        {
+          "accounts": 347,
+          "arpa": 2243191.6426512967,
+          "avg_deal_size": 2243191.6426512967,
+          "contracts": 347,
+          "gmv_total": 778387500.0,
+          "new_gmv": 778387500.0,
+          "renewal_gmv": null
+        }
+      ]
+    },
+    "revenue_kpis_2022": {
+      "call": {
+        "year": "2022"
+      },
+      "metric": "revenue_kpis",
+      "rows": [
+        {
+          "accounts": 879,
+          "arpa": 2334744.0273037544,
+          "avg_deal_size": 2334744.0273037544,
+          "contracts": 879,
+          "gmv_total": 2052240000.0,
+          "new_gmv": 1305615000.0,
+          "renewal_gmv": 746625000.0
+        }
+      ]
+    },
+    "revenue_kpis_2023": {
+      "call": {
+        "year": "2023"
+      },
+      "metric": "revenue_kpis",
+      "rows": [
+        {
+          "accounts": 528,
+          "arpa": 2615672.3484848486,
+          "avg_deal_size": 2615672.3484848486,
+          "contracts": 528,
+          "gmv_total": 1381075000.0,
+          "new_gmv": null,
+          "renewal_gmv": 1381075000.0
         }
       ]
     },
@@ -11094,7 +11307,7 @@ window.METRICS_DATA = {
     "catalog_used": 42,
     "data_cutoff": "2022-12-31",
     "db": "warehouse/saas.duckdb",
-    "generated_at": "2026-11-25T04:32:44+00:00",
+    "generated_at": "2026-11-25T04:37:58+00:00",
     "metrics_layer": "metrics/ (F4)",
     "rules": [
       "Setiap angka berasal dari satu pemanggilan metrik registry (F4).",
