@@ -30,6 +30,15 @@ window.METRICS_DATA = {
       "name": "cac_proxy"
     },
     {
+      "atribusi": "expired_date (veredicto no cutoff)",
+      "catatan": "churn explícito (backlog F5): contrato vencido sem renovação; diferente do renewal rate (cohort de leads, censused) — aqui só contratos que já venceram entram",
+      "dipakai_dashboard": true,
+      "grain": "all-time / per ano (parâmetro `year`)",
+      "jenis": "cohort",
+      "katalog": "Retensi",
+      "name": "churn_rate"
+    },
+    {
       "atribusi": "contract_date",
       "catatan": "Q4 di 07: mengembalikan baris terfilter, bukan hitungan baru; id akun = leads_id (sumber tidak punya nama akun — aturan privasi F5); paginasi via limit/offset, urutan deterministik",
       "dipakai_dashboard": true,
@@ -156,6 +165,15 @@ window.METRICS_DATA = {
       "name": "leads_registered"
     },
     {
+      "atribusi": "data cutoff (leads 2022-12-30, contratos 2023-12-30)",
+      "catatan": "regras fixas: stale>30d ≥1.000 alarm; churn ano-vs-ano >+10pp alarm; CAC proxy max/mediana >3x warn; CPL >3x warn; give-up >5% warn; slices de win rate n<30 info; NPS 2023 sem survey info",
+      "dipakai_dashboard": true,
+      "grain": "snapshot (avaliado no cutoff)",
+      "jenis": "snapshot",
+      "katalog": "QA / Alerting",
+      "name": "metric_alerts"
+    },
+    {
       "atribusi": "bulan kontrak pertama",
       "catatan": "GMV renewal ÷ GMV kontrak-pertama kohort sama",
       "dipakai_dashboard": true,
@@ -235,6 +253,15 @@ window.METRICS_DATA = {
       "jenis": "period",
       "katalog": "Pricing & Discount",
       "name": "price_tier_mix"
+    },
+    {
+      "atribusi": "expired_date (projeção)",
+      "catatan": "forecast determinístico (backlog F5): GMV dos contratos ativos no cutoff que vencem depois dele, por mês de vencimento; assume 100% renewal pelo mesmo GMV e nenhuma new business (leads pararam em 30/12/2022) — não é extrapolação estatística",
+      "dipakai_dashboard": true,
+      "grain": "mensal (2024)",
+      "jenis": "period",
+      "katalog": "Retensi",
+      "name": "renewal_backlog"
     },
     {
       "atribusi": "bulan kontrak pertama",
@@ -869,6 +896,60 @@ window.METRICS_DATA = {
           "quarter": "2022-10-01",
           "source": "Refferal",
           "spend": 30500000.0
+        }
+      ]
+    },
+    "churn_rate": {
+      "call": {},
+      "metric": "churn_rate",
+      "rows": [
+        {
+          "churn_rate": 0.3019639934533552,
+          "churned": 369,
+          "expired": 1222,
+          "renewed": 853
+        }
+      ]
+    },
+    "churn_rate_2021": {
+      "call": {
+        "year": "2021"
+      },
+      "metric": "churn_rate",
+      "rows": [
+        {
+          "churn_rate": null,
+          "churned": 0,
+          "expired": 0,
+          "renewed": 0
+        }
+      ]
+    },
+    "churn_rate_2022": {
+      "call": {
+        "year": "2022"
+      },
+      "metric": "churn_rate",
+      "rows": [
+        {
+          "churn_rate": 0.06340057636887608,
+          "churned": 22,
+          "expired": 347,
+          "renewed": 325
+        }
+      ]
+    },
+    "churn_rate_2023": {
+      "call": {
+        "year": "2023"
+      },
+      "metric": "churn_rate",
+      "rows": [
+        {
+          "churn_rate": 0.3965714285714286,
+          "churned": 347,
+          "expired": 875,
+          "renewed": 528
         }
       ]
     },
@@ -52362,6 +52443,61 @@ window.METRICS_DATA = {
         }
       ]
     },
+    "metric_alerts": {
+      "call": {},
+      "metric": "metric_alerts",
+      "rows": [
+        {
+          "detail": "churn 39,7% (vencidos 2023) vs 6,3% (2022); a leva de contratos 2022 assinados no pico venceu em 2023",
+          "rule": "churn_rate_yoy",
+          "status": "alarm",
+          "threshold": 10.0,
+          "value": 33.31708522025525
+        },
+        {
+          "detail": "open leads idle >30d no cutoff 2022-12-31; esperado: a atividade de leads parou em 30/12/2022 — o pipeline antigo nunca vai fechar",
+          "rule": "stale_open_pipeline_30d",
+          "status": "alarm",
+          "threshold": 1000.0,
+          "value": 2457.0
+        },
+        {
+          "detail": "nenhum survey com deal won em 2023 (leads pararam em 30/12/2022); NPS/CSAT 2023 ficam vazios, não zero",
+          "rule": "nps_2023_sem_survey",
+          "status": "info",
+          "threshold": 0.0,
+          "value": 0.0
+        },
+        {
+          "detail": "87 de 129 slices source-mês com n<30 — win rate fica vazio neles (regra #5), não zero",
+          "rule": "win_rate_slices_n_pequeno",
+          "status": "info",
+          "threshold": 30.0,
+          "value": 87.0
+        },
+        {
+          "detail": "CAC proxy trimestral: máx 2,18 jt vs mediana 1,01 jt (2,16x)",
+          "rule": "cac_proxy_outlier",
+          "status": "ok",
+          "threshold": 3.0,
+          "value": 2.157340662759944
+        },
+        {
+          "detail": "CPL mensal: máx 500 rb vs mediana 252 rb (1,98x)",
+          "rule": "cpl_outlier",
+          "status": "ok",
+          "threshold": 3.0,
+          "value": 1.9841269841269842
+        },
+        {
+          "detail": "give-up 4,5% do GMV total (custo do programa de desconto)",
+          "rule": "revenue_giveup_share",
+          "status": "ok",
+          "threshold": 0.05,
+          "value": 0.04471410314474966
+        }
+      ]
+    },
     "net_gmv_retention": {
       "call": {},
       "metric": "net_gmv_retention",
@@ -54429,6 +54565,77 @@ window.METRICS_DATA = {
           "gmv": 585450000.0,
           "price_per_seat": 15000.0,
           "subscription_type": "Enterprise"
+        }
+      ]
+    },
+    "renewal_backlog": {
+      "call": {},
+      "metric": "renewal_backlog",
+      "rows": [
+        {
+          "contracts": 4,
+          "gmv": 9700000.0,
+          "month": "2023-12-01"
+        },
+        {
+          "contracts": 55,
+          "gmv": 139750000.0,
+          "month": "2024-01-01"
+        },
+        {
+          "contracts": 27,
+          "gmv": 76225000.0,
+          "month": "2024-02-01"
+        },
+        {
+          "contracts": 21,
+          "gmv": 57750000.0,
+          "month": "2024-03-01"
+        },
+        {
+          "contracts": 64,
+          "gmv": 171550000.0,
+          "month": "2024-04-01"
+        },
+        {
+          "contracts": 31,
+          "gmv": 76225000.0,
+          "month": "2024-05-01"
+        },
+        {
+          "contracts": 26,
+          "gmv": 75200000.0,
+          "month": "2024-06-01"
+        },
+        {
+          "contracts": 75,
+          "gmv": 188225000.0,
+          "month": "2024-07-01"
+        },
+        {
+          "contracts": 34,
+          "gmv": 99050000.0,
+          "month": "2024-08-01"
+        },
+        {
+          "contracts": 29,
+          "gmv": 93650000.0,
+          "month": "2024-09-01"
+        },
+        {
+          "contracts": 90,
+          "gmv": 225925000.0,
+          "month": "2024-10-01"
+        },
+        {
+          "contracts": 45,
+          "gmv": 106550000.0,
+          "month": "2024-11-01"
+        },
+        {
+          "contracts": 31,
+          "gmv": 70975000.0,
+          "month": "2024-12-01"
         }
       ]
     },
@@ -60454,11 +60661,11 @@ window.METRICS_DATA = {
     }
   },
   "meta": {
-    "catalog_size": 44,
-    "catalog_used": 43,
+    "catalog_size": 47,
+    "catalog_used": 46,
     "data_cutoff": "2022-12-31",
     "db": "warehouse/saas.duckdb",
-    "generated_at": "2026-11-25T04:51:45+00:00",
+    "generated_at": "2026-11-25T05:15:31+00:00",
     "metrics_layer": "metrics/ (F4)",
     "rules": [
       "Setiap angka berasal dari satu pemanggilan metrik registry (F4).",

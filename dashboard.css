@@ -282,6 +282,12 @@ table.data .bar-cell .in { position: absolute; left: 0; bottom: 2px; height: 2px
 .pager .btn[disabled]:hover { border-color: var(--rule); color: var(--ink-2); }
 .pager .pinfo { font-family: var(--font-num); font-size: var(--fs-xs); color: var(--ink-3); margin-left: auto; }
 
+/* status do painel de alertas (backlog F5) — cores de status dos tokens */
+.tag--alarm { color: var(--warn); border-color: var(--warn); background: var(--warn-tint); font-weight: 600; }
+.tag--warn  { color: var(--warn); border-color: var(--warn); }
+.tag--ok    { color: var(--good); border-color: var(--good); }
+.tag--info  { color: var(--ink-3); }
+
 .pill-n { font-family: var(--font-num); font-size: 9.5px; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 0; padding: 0 5px; white-space: nowrap; }
 .pill-n.small { color: var(--warn); border-color: var(--warn); background: var(--warn-tint); }
 
